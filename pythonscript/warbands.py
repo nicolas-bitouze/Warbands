@@ -119,14 +119,17 @@ def found(map_name,band_name,dots,username,timestamp,log_line):
 	map_status["reports"].append([username,log_line])
 	update_html()
 
-	params = urllib.urlencode({'mapname': map_name.replace(' ','_'), 'band': band_name, 'dots': dots, 'report': log_line[:-2]})
-	headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
-	conn = httplib.HTTPConnection("nembibi.com", timeout=120)
-	conn.request("POST", "/warbands_test/report.php", params, headers)
-	response = conn.getresponse()
-	print("Response:", response.status, response.reason)
-	print(response.read())
-	conn.close()
+	try:
+		params = urllib.urlencode({'mapname': map_name.replace(' ','_'), 'band': band_name, 'dots': dots, 'report': log_line[:-2]})
+		headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+		conn = httplib.HTTPConnection("nembibi.com", timeout=30)
+		conn.request("POST", "/warbands_test/report.php", params, headers)
+		response = conn.getresponse()
+		print("Response:", response.status, response.reason)
+		print(response.read())
+		conn.close()
+	except Exception as e:
+		print(type(e))
 
 # Handles one log line, returns true if it was considered to be a warbands report
 def handle_line(line):

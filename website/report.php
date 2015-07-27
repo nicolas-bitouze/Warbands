@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "warbands";
-$password = ""; // password
+$password = "";
 
 // Connect to the database
 $mysqli = new mysqli($servername, $username, $password, $username);
@@ -31,5 +31,7 @@ $current_data = file_get_contents("http://nembibi.com/warbands_test/current_data
 $file = fopen("current_data","w") or die("Could not open cache file for writing.");
 fwrite($file, $current_data);
 fclose($file);
+
+file_get_contents("http://layrajha.com/warbands/update_content.php");
 
 ?>

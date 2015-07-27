@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "warbands";
-$password = ""; // password
+$password = "";
 
 // Connect to the database
 $connection = new mysqli($servername, $username, $password, $username);
@@ -22,12 +22,14 @@ ob_start();
 
 echo('[[');
 while ($row = $result->fetch_assoc()) {
-    if($firstline) {
-        $firstline = false;
-    } else {
-        echo(',');
+    if($row && count($row)>0) {
+        if($firstline) {
+            $firstline = false;
+        } else {
+            echo(',');
+        }
+        echo(json_encode($row));
     }
-    echo(json_encode($row));
 }
 echo('],[');
 $timeslot = $timeslot - 1;
@@ -37,12 +39,14 @@ $result = $connection->query(
                              );
 $firstline = true;
 while ($row = $result->fetch_assoc()) {
-    if($firstline) {
-        $firstline = false;
-    } else {
-        echo(',');
+    if($row && count($row)>0) {
+        if($firstline) {
+            $firstline = false;
+        } else {
+            echo(',');
+        }
+        echo(json_encode($row));
     }
-    echo(json_encode($row));
 }
 echo(']]');
 
