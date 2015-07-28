@@ -2,8 +2,6 @@ import time
 import re,string
 import httplib, urllib
 
-print_debug = False
-
 log_folder = r"J:\Steam\SteamApps\common\Path of Exile\logs"
 log_name   = r"Client.txt"
 
@@ -25,18 +23,6 @@ maps = {
 	82 : {"Abyss":None,"Colosseum":None,"Core":None}
 }
 
-status = {}
-
-def prepare_status():
-	for level,maps_data in maps.iteritems():
-		for map_name in maps_data.iterkeys():
-			status[map_name] = {
-				"level" : level,
-				"reports" : [],
-				"dots" : None,
-				"band": None
-			}
-
 needs_two_words = [
 	"Tropical Island","Spider Lair","Spider Forest","Underground Sea",
 	"Dry Woods","Waste Pool","Oba's Cursed Trove","Dark Forest",
@@ -50,7 +36,7 @@ bands = {
 	"Mutewind" : ["Trackers", "Hunters", "Purifiers", "Cleansed"]
 }
 
-banned_words = ["if", "was", "were", "last", "may", "maybe", "might", "could", "perhaps", "what", "why", "when"]
+banned_words = ["if", "was", "were", "last", "may", "maybe", "might", "could", "perhaps", "what", "why", "when", "a3m", "a4m", "merc", "merci", "merciless"]
 banned_symbols = ["?"]
 
 threshold_length_for_levenshtein1 = 5
@@ -80,50 +66,23 @@ def test_lv(s1, s2):
 		max_dist = 2
 	return (levenshtein(s1.lower(),s2.lower()) <= max_dist)
 
-def debug(str):
-	if print_debug:
-		print(str)
-
-def update_html():
-	with open("warbands.html","w") as f:
-		f.write("<html>\n<head>\n  <title>Warbands Info Script</title>\n</head>\n")
-		f.write("<body>\n")
-		f.write("  <table>\n")
-		f.write("    <tr><th>Map</th><th>Level</th><th>Band</th><th>Dots</th></tr>\n")
-		for level in range(68,83):
-			for map_name in maps[level].iterkeys():
-				map_status = status[map_name]
-				f.write("    <tr><td>%s</td><td>%d</td><td>%s</td><td>%s</td></tr>\n" % (map_name,map_status["level"],map_status["band"] or "?",str(map_status["dots"]) or "?"))
-		f.write("  </table>\n")
-		f.write("</body>\n")
-		f.write("</html>\n")
-
-def reset():
-	prepare_status()
-
-def found(map_name,band_name,dots,username,timestamp,log_line):
+def found(map_name,band_name,dots,username,log_line):
 	if dots == 0:
 		print(
-			"=======> 0 dots in %s according to %s's message at t=%d" %
-			(map_name,username,timestamp)
+			"0 dots in %s according to %s's message" %
+			(map_name,username)
 		)
 	else:
 		print(
-			"=======> %s has %d dots in %s according to %s's message at t=%d" %
-			(band_name or "A warband",dots,map_name,username,timestamp)
+			"%s has %d dots in %s according to %s's message" %
+			(band_name or "A warband",dots,map_name,username)
 		)
-	map_status = status[map_name]
-	map_status["dots"] = dots
-	map_status["band"] = band_name
-	map_status["last_update"] = timestamp
-	map_status["reports"].append([username,log_line])
-	update_html()
 
 	try:
-		params = urllib.urlencode({'mapname': map_name.replace(' ','_'), 'band': band_name, 'dots': dots, 'report': log_line[:-2]})
+		params = urllib.urlencode({'mapname': map_name.replace(' ','_'), 'band': band_name, 'dots': dots, 'report': log_line[:-1]})
 		headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 		conn = httplib.HTTPConnection("nembibi.com", timeout=30)
-		conn.request("POST", "/warbands_test/report.php", params, headers)
+		conn.request("POST", "/warbands/report.php", params, headers)
 		response = conn.getresponse()
 		print("Response:", response.status, response.reason)
 		print(response.read())
@@ -131,6 +90,17 @@ def found(map_name,band_name,dots,username,timestamp,log_line):
 	except Exception as e:
 		print(type(e))
 
+def update_reset(new_reset):
+	print("New reset: %d" % new_reset)
+	params = urllib.urlencode({'new_reset_timer': new_reset})
+	headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+	conn = httplib.HTTPConnection("nembibi.com", timeout=30)
+	conn.request("POST", "/warbands/update_reset_timer.php", params, headers)
+	response = conn.getresponse()
+	print("Response:", response.status, response.reason)
+	print(response.read())
+	conn.close()
+	
 # Handles one log line, returns true if it was considered to be a warbands report
 def handle_line(line):
 	# Remove special characters
@@ -143,6 +113,10 @@ def handle_line(line):
 	timestamp = int(time.time())
 	username  = data[7]
 	if username[0] != "#":
+		m = re.match(r"\Awarbandsreset(\d?\d)\Z",data[8])
+		if m:
+			new_reset = int(m.group(1))
+			update_reset(new_reset)
 		return
 	username = username[1:-1]
 	# Maybe we don't need to search for \w anymore since we remove special chars
@@ -166,21 +140,16 @@ def handle_line(line):
 	m = re.search(r"(?:\A|\W)(\d)[- ]?d(?:ots?)?(?:\Z|\W)",string.join(words))
 	if m:
 		dots = int(m.group(1))
-		#debug("%d dots detected by %s at t=%d!" % (dots, username, timestamp))
 		dots_found.append(int(dots))
 
-	debug("===============================================================")
-	debug(string.join(words))
 	for word in words:
 		# Detects occurences of a map/population/band name
 		for band_name, populations in bands.iteritems():
 			if test_lv(word,band_name):
-				#debug("%s detected by %s at t=%d!" % (band_name, username, timestamp))
 				bands_found.append(band_name)
 			for population in populations:
 				max_dist = 1
 				if test_lv(word,population):
-					#debug("(%s) %s detected by %s at t=%d!" % (band_name, population, username, timestamp))
 					populations_found.append(population)
 		for level,maps_data in maps.iteritems():
 			for map_name,map_altnames in maps_data.iteritems():
@@ -189,7 +158,6 @@ def handle_line(line):
 					altnames = [map_name]
 				for altname in altnames:
 					if test_lv(word,altname):
-						#debug("%s detected by %s at t=%d!" % (map_name, username, timestamp))
 						maps_found.append(map_name)
 						break
 
@@ -234,10 +202,11 @@ def handle_line(line):
 		maps_found.remove("Temple")
 	if ("The Apex of Sacrifice" in maps_found) and ("Vaults of Atziri" in maps_found):
 		maps_found.remove("The Apex of Sacrifice")
+	if ("The Alluring Abyss" in maps_found) and ("Abyss" in maps_found):
+		maps_found.remove("Abyss")
 		
 	# If there is a contradiction, return
 	if max(len(maps_found), len(populations_found), len(bands_found), len(dots_found)) >= 2:
-		debug("Ignored report: Detected too many of at least one of: maps, pops, bands or dots")
 		return
 
 	# Strip log line from what we don't care about
@@ -251,49 +220,38 @@ def handle_line(line):
 			if len(bands_found) == 1:
 				b = bands_found[0]
 				if p not in bands[b]:
-					debug("Ignored report: Population didn't match band")
 					return
 				d = bands[b].index(p)+1
-				found(m,b,d,username,timestamp,log_line)
+				found(m,b,d,username,log_line)
 				return True
 			for b,populations in bands.iteritems():
 				if p in populations:
 					d = bands[b].index(p)+1
-					found(m,b,d,username,timestamp,log_line)
+					found(m,b,d,username,log_line)
 					return True
 		if len(dots_found) == 1:
 			d = dots_found[0]
 			if d == 0:
-				found(m,None,d,username,timestamp,log_line)
+				found(m,None,d,username,log_line)
 				return True
 			if len(bands_found) == 1:
 				b = bands_found[0]
-				found(m,b,d,username,timestamp,log_line)
+				found(m,b,d,username,log_line)
 				return True
-			found(m,None,d,username,timestamp,log_line)
+			found(m,None,d,username,log_line)
 			return True
-	debug("Ignored report: Not denough data")
 
-minutes_reset = 3
 def main():
-	prepare_status()
-	update_html()
-	prev_minutes = int(time.time()/60) % 30
 	with open(r"%s\%s" % (log_folder, log_name)) as f:
 		f.seek(0,2)
 		while True:
-			minutes = int(time.time()/60) % 30
-			if minutes == minutes_reset and prev_minutes != minutes:
-				reset()
-			prev_minutes = minutes
 			where = f.tell()
 			line = f.readline()
 			if not line:
 				time.sleep(1)
 				f.seek(where)
 			else:
-				if handle_line(line):
-					update_html()
+				handle_line(line)
 
 
 main()

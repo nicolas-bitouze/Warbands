@@ -1,7 +1,8 @@
 <?php
-$timeslot = (int) (((time() / 60) - 24) / 60);
+$reset = (int) trim(file_get_contents('reset_timer'));
+$timeslot = (int) (((time() / 60) - $reset) / 60);
 
-$dbh = new PDO('mysql:host=localhost;dbname=warbands', 'root', '');
+$dbh = new PDO('mysql:host=localhost;dbname=warbands', 'warbands', 'xqsdft1xqsdft=');
 
 $warbands = $dbh -> prepare('SELECT name,band,dots,reports_on_710,last_report_text FROM maps WHERE timeslot=:timeslot');
 

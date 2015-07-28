@@ -1,0 +1,824 @@
+<html> 
+<head> 
+<title>Warbands Status</title>
+	<style >
+
+body {
+	background: -webkit-linear-gradient(90deg, #485563 10%, #29323c 90%); /* Chrome 10+, Saf5.1+ */
+	background:    -moz-linear-gradient(90deg, #485563 10%, #29323c 90%); /* FF3.6+ */
+	background:     -ms-linear-gradient(90deg, #485563 10%, #29323c 90%); /* IE10 */
+	background:      -o-linear-gradient(90deg, #485563 10%, #29323c 90%); /* Opera 11.10+ */
+	background:         linear-gradient(90deg, #485563 10%, #29323c 90%); /* W3C */
+}
+	
+#timer {
+	font-size: 200%;
+	font-style: bold;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+#legend {
+	border: 1px solid GoldenRod;
+	border-radius: 5px;
+	padding: 10px;
+	background: black;
+	color: goldenrod;
+	z-index: 500;
+}
+#legend div {
+	color: goldenrod;
+}
+#legend td {
+	vertical-align: center;
+}
+
+.level {
+	position: absolute;
+	opacity: 0.75;
+}
+
+#searchbox {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	padding: 4px;
+	background: rgba(220,220,220,1);
+}
+	
+span.tooltips {
+	position: relative;
+	display: inline;
+}
+span.tooltips > div.tooltipDiv {
+	position: absolute;
+	width: 300px;
+	color: #FFFFFF;
+	background: #000000;
+	border: 2px solid #6D6D6D;
+	padding: 4px;
+	text-align: center;
+	visibility: hidden;
+	border-radius: 6px;
+}
+span:hover.tooltips > div.tooltipDiv {
+	visibility: visible;
+	left: 100%;
+	margin-left: -5px;
+	z-index: 1000;
+}
+span:hover.tooltipabove > div.tooltipDiv {
+	bottom: 0%;
+	margin-bottom: 55px;
+}
+span:hover.tooltipleft > div.tooltipDiv {
+	left: -300px;
+}
+
+
+.report {
+	color: GoldenRod;
+	font-style: italic;
+}
+
+
+.map_container {
+	width: 55px;
+	height: 55px;
+	margin: 2px;
+}
+.highlighted_map_container:after {
+	content: '';
+	height: 200%;
+	width: 200%;
+	border-radius: 50%;
+	top: -50%;
+	left: -50%;
+	position: absolute;
+	background-color: rgba(255,255,255,0.3);
+	z-index: 25;
+	pointer-events: none;
+}
+	
+.map_b1, .map_b2, .map_b3, .map_b4, .map_r1, .map_r2, .map_r3, .map_r4, .map_m1, .map_m2, .map_m3, .map_m4, .map_empty, .map_unknown {
+	border-radius: 10px;
+	width: 39px;
+	height: 39px;
+}
+.map_b1 div, .map_b2 div, .map_b3 div, .map_b4 div, .map_r1 div, .map_r2 div, .map_r3 div, .map_r4 div, .map_m1 div, .map_m2 div, .map_m3 div, .map_m4 div, .map_empty div, .map_unknown div {
+	width: 39px;
+	height: 39px;
+	background-image: url("MapIcon/sprites_linear.png");
+	background-repeat: no-repeat;
+	display: block;
+}
+
+.map_b4, .map_r4, .map_m4 {
+	-webkit-animation: flash linear 1.2s infinite;
+	animation: flash linear 1.2s infinite;
+}
+@keyframes flash {
+	0% { opacity: 1; }
+	10% { opacity: 0.3; }
+	20% { opacity: 1; }
+	100% { opacity: 1; }
+}
+
+.map_empty {
+	background: rgba(0,0,0,0.4);
+	border: 8px solid rgba(0,0,0,0.3);
+}
+.map_unknown {
+	opacity: 0.3;
+	background: rgba(0,0,0,0.4);
+	border: 8px solid rgba(0,0,0,0.3);
+}
+
+.map_b1, .map_b2, .map_b3, .map_b4 {
+	background: rgba(0,128,0,0.3);
+	border-top: 8px solid green;
+	border-right: 8px solid rgba(0,0,0,0);
+	border-bottom: 8px solid rgba(0,0,0,0);
+    border-left: 8px solid rgba(0,0,0,0);
+}
+.map_b2, .map_b3, .map_b4 {
+	border-right: 8px solid green;
+}
+.map_b3, .map_b4 {
+	border-bottom: 8px solid green;
+}
+.map_b4 {
+    border-left: 8px solid green;
+}
+
+.map_r1, .map_r2, .map_r3, .map_r4 {
+	background: rgba(128,0,0,0.3);
+	border-top: 8px solid red;
+	border-right: 8px solid rgba(0,0,0,0);
+	border-bottom: 8px solid rgba(0,0,0,0);
+    border-left: 8px solid rgba(0,0,0,0);
+}
+.map_r2, .map_r3, .map_r4 {
+	border-right: 8px solid red;
+}
+.map_r3, .map_r4 {
+	border-bottom: 8px solid red;
+}
+.map_r4 {
+    border-left: 8px solid red;
+}
+
+.map_m1, .map_m2, .map_m3, .map_m4 {
+	background: rgba(0,0,128,0.3);
+	border-top: 8px solid blue;
+	border-right: 8px solid rgba(0,0,0,0);
+	border-bottom: 8px solid rgba(0,0,0,0);
+    border-left: 8px solid rgba(0,0,0,0);
+}
+.map_m2, .map_m3, .map_m4 {
+	border-right: 8px solid blue;
+}
+.map_m3, .map_m4 {
+	border-bottom: 8px solid blue;
+}
+.map_m4 {
+    border-left: 8px solid blue;
+}
+
+#mapdiv\_Abyss > span > div > div                   { background-position: -0005px 0px; }
+#mapdiv\_Academy > span > div > div                 { background-position: -0055px 0px; }
+#mapdiv\_Acton\'s\_Nightmare > span > div > div     { background-position: -0105px 0px; }
+#mapdiv\_Arachnid\_Nest > span > div > div          { background-position: -0155px 0px; }
+#mapdiv\_Arcade > span > div > div                  { background-position: -0205px 0px; }
+#mapdiv\_Arena > span > div > div                   { background-position: -0255px 0px; }
+#mapdiv\_Arid\_Lake > span > div > div              { background-position: -0305px 0px; }
+#mapdiv\_Arsenal > span > div > div                 { background-position: -0355px 0px; }
+#mapdiv\_Bazaar > span > div > div                  { background-position: -0405px 0px; }
+#mapdiv\_Bog > span > div > div                     { background-position: -0455px 0px; }
+#mapdiv\_Canyon > span > div > div                  { background-position: -0505px 0px; }
+#mapdiv\_Catacomb > span > div > div                { background-position: -0555px 0px; }
+#mapdiv\_Cells > span > div > div                   { background-position: -0605px 0px; }
+#mapdiv\_Cemetery > span > div > div                { background-position: -0655px 0px; }
+#mapdiv\_Channel > span > div > div                 { background-position: -0705px 0px; }
+#mapdiv\_Colonnade > span > div > div               { background-position: -0755px 0px; }
+#mapdiv\_Colosseum > span > div > div               { background-position: -0805px 0px; }
+#mapdiv\_Core > span > div > div                    { background-position: -0855px 0px; }
+#mapdiv\_Courtyard > span > div > div               { background-position: -0905px 0px; }
+#mapdiv\_Coves > span > div > div                   { background-position: -0955px 0px; }
+#mapdiv\_Crematorium > span > div > div             { background-position: -1005px 0px; }
+#mapdiv\_Crypt > span > div > div                   { background-position: -1055px 0px; }
+#mapdiv\_Dark\_Forest > span > div > div            { background-position: -1105px 0px; }
+#mapdiv\_Desert > span > div > div                  { background-position: -1155px 0px; }
+#mapdiv\_Dry\_Peninsula > span > div > div          { background-position: -1205px 0px; }
+#mapdiv\_Dry\_Woods > span > div > div              { background-position: -1255px 0px; }
+#mapdiv\_Dunes > span > div > div                   { background-position: -1305px 0px; }
+#mapdiv\_Dungeon > span > div > div                 { background-position: -1355px 0px; }
+#mapdiv\_Excavation > span > div > div              { background-position: -1405px 0px; }
+#mapdiv\_Ghetto > span > div > div                  { background-position: -1455px 0px; }
+#mapdiv\_Gorge > span > div > div                   { background-position: -1505px 0px; }
+#mapdiv\_Graveyard > span > div > div               { background-position: -1555px 0px; }
+#mapdiv\_Grotto > span > div > div                  { background-position: -1605px 0px; }
+#mapdiv\_Jungle\_Valley > span > div > div          { background-position: -1655px 0px; }
+#mapdiv\_Labyrinth > span > div > div               { background-position: -1705px 0px; }
+#mapdiv\_Maelstrom\_of\_Chaos > span > div > div    { background-position: -1755px 0px; }
+#mapdiv\_Mao\_Kun > span > div > div                { background-position: -1805px 0px; }
+#mapdiv\_Maze > span > div > div                    { background-position: -1855px 0px; }
+#mapdiv\_Mine > span > div > div                    { background-position: -1905px 0px; }
+#mapdiv\_Mountain\_Ledge > span > div > div         { background-position: -1955px 0px; }
+#mapdiv\_Mud\_Geyser > span > div > div             { background-position: -2005px 0px; }
+#mapdiv\_Museum > span > div > div                  { background-position: -2055px 0px; }
+#mapdiv\_Necropolis > span > div > div              { background-position: -2105px 0px; }
+#mapdiv\_Oba\'s\_Cursed\_Trove > span > div > div   { background-position: -2155px 0px; }
+#mapdiv\_Olmec\'s\_Sanctum > span > div > div       { background-position: -2205px 0px; }
+#mapdiv\_Orchard > span > div > div                 { background-position: -2255px 0px; }
+#mapdiv\_Overgrown\_Ruin > span > div > div         { background-position: -2305px 0px; }
+#mapdiv\_Overgrown\_Shrine > span > div > div       { background-position: -2355px 0px; }
+#mapdiv\_Palace > span > div > div                  { background-position: -2405px 0px; }
+#mapdiv\_Pier > span > div > div                    { background-position: -2455px 0px; }
+#mapdiv\_Pit > span > div > div                     { background-position: -2505px 0px; }
+#mapdiv\_Plateau > span > div > div                 { background-position: -2555px 0px; }
+#mapdiv\_Poorjoy\'s\_Asylum > span > div > div      { background-position: -2605px 0px; }
+#mapdiv\_Precinct > span > div > div                { background-position: -2655px 0px; }
+#mapdiv\_Promenade > span > div > div               { background-position: -2705px 0px; }
+#mapdiv\_Quarry > span > div > div                  { background-position: -2755px 0px; }
+#mapdiv\_Reef > span > div > div                    { background-position: -2805px 0px; }
+#mapdiv\_Residence > span > div > div               { background-position: -2855px 0px; }
+#mapdiv\_Sewer > span > div > div                   { background-position: -2905px 0px; }
+#mapdiv\_Shipyard > span > div > div                { background-position: -2955px 0px; }
+#mapdiv\_Shore > span > div > div                   { background-position: -3005px 0px; }
+#mapdiv\_Shrine > span > div > div                  { background-position: -3055px 0px; }
+#mapdiv\_Spider\_Forest > span > div > div          { background-position: -3105px 0px; }
+#mapdiv\_Spider\_Lair > span > div > div            { background-position: -3155px 0px; }
+#mapdiv\_Springs > span > div > div                 { background-position: -3205px 0px; }
+#mapdiv\_Strand > span > div > div                  { background-position: -3255px 0px; }
+#mapdiv\_Temple > span > div > div                  { background-position: -3305px 0px; }
+#mapdiv\_The\_Apex\_of\_Sacrifice > span > div > div{ background-position: -3355px 0px; }
+#mapdiv\_The\_Alluring\_Abyss > span > div > div    { background-position: -3405px 0px; }
+#mapdiv\_Thicket > span > div > div                 { background-position: -3455px 0px; }
+#mapdiv\_Torture\_Chamber > span > div > div        { background-position: -3505px 0px; }
+#mapdiv\_Tropical\_Island > span > div > div        { background-position: -3555px 0px; }
+#mapdiv\_Tunnel > span > div > div                  { background-position: -3605px 0px; }
+#mapdiv\_Underground\_River > span > div > div      { background-position: -3655px 0px; }
+#mapdiv\_Underground\_Sea > span > div > div        { background-position: -3705px 0px; }
+#mapdiv\_Vaal\_Pyramid > span > div > div           { background-position: -3755px 0px; }
+#mapdiv\_Vaal\_Temple > span > div > div            { background-position: -3805px 0px; }
+#mapdiv\_Vaults\_of\_Atziri > span > div > div      { background-position: -3855px 0px; }
+#mapdiv\_Villa > span > div > div                   { background-position: -3905px 0px; }
+#mapdiv\_Village\_Ruin > span > div > div           { background-position: -3955px 0px; }
+#mapdiv\_Volcano > span > div > div                 { background-position: -4005px 0px; }
+#mapdiv\_Waste\_Pool > span > div > div             { background-position: -4055px 0px; }
+#mapdiv\_Wasteland > span > div > div               { background-position: -4105px 0px; }
+#mapdiv\_Waterways > span > div > div               { background-position: -4155px 0px; }
+#mapdiv\_Whakawairua\_Tuahu > span > div > div      { background-position: -4205px 0px; }
+#mapdiv\_Wharf > span > div > div                   { background-position: -4255px 0px; }
+
+</style>
+
+    <script type="application/x-javascript"> 
+	
+	var updateDataInterval = 20;
+	var updateTimerInterval = 10;
+	var reset;
+
+	var numTimerUpdatesBetweenDataUpdates = Math.floor(updateDataInterval / updateTimerInterval);
+	var timestampOffset = (new Date()).getTimezoneOffset() * 1000;
+	
+	var allMapData = {};
+	var mapNames = [];
+	
+	var currentSlot = 1;
+	var firstTimeSwitch = true;
+
+	var bandShortcuts = {
+		"Mutewind" : "m", "Brinerot" : "b", "Redblade" : "r"
+	};
+	
+	// ---------------------------------------------------------------
+	// Draw the arrows
+				
+	function intersection(line1StartX, line1StartY, line1EndX, line1EndY, line2StartX, line2StartY, line2EndX, line2EndY) {
+		var denominator, a, b, numerator1, numerator2;
+		denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
+		if (denominator == 0) {
+			return false;
+		}
+		a = line1StartY - line2StartY;
+		b = line1StartX - line2StartX;
+		numerator1 = ((line2EndX - line2StartX) * a) - ((line2EndY - line2StartY) * b);
+		numerator2 = ((line1EndX - line1StartX) * a) - ((line1EndY - line1StartY) * b);
+		a = numerator1 / denominator;
+		b = numerator2 / denominator;
+
+		if (a >= 0 && a <= 1 && b >= 0 && b <= 1) {
+			return {
+				x : line1StartX + (a * (line1EndX - line1StartX)),
+				y : line1StartY + (a * (line1EndY - line1StartY))
+			};
+		} else {
+			return false;
+		}
+	};
+	
+	function sides(rect) {
+		return {
+			left   : {x1:rect.left , y1:rect.top   , x2:rect.left , y2:rect.bottom},
+			bottom : {x1:rect.left , y1:rect.bottom, x2:rect.right, y2:rect.bottom},
+			right  : {x1:rect.right, y1:rect.bottom, x2:rect.right, y2:rect.top   },
+			top    : {x1:rect.right, y1:rect.top   , x2:rect.left , y2:rect.top   }
+		};
+	}
+	
+	function drawRect(ctx,rect) {
+		ctx.beginPath();
+		ctx.moveTo(rect.left ,rect.top   );
+        ctx.lineTo(rect.left ,rect.bottom);
+		ctx.lineTo(rect.right,rect.bottom);
+		ctx.lineTo(rect.right,rect.top   );
+		ctx.lineTo(rect.left ,rect.top   );
+		ctx.stroke();
+	}
+	
+	function scaledRotated(vectX,vectY,theta,length) {
+		var x = vectX * Math.cos(theta) - vectY*Math.sin(theta);
+		var y = vectX * Math.sin(theta) + vectY*Math.cos(theta);
+		var currentLength = Math.sqrt(x*x+y*y);
+		return {
+			x : x * length / currentLength,
+			y : y * length / currentLength
+		};
+	}
+	
+	function getRelativeBoundingRect(element) {
+		var canvas = document.getElementById("canvas");
+		var contentboxdiv = document.getElementById("contentbox");
+		var ctxoffsetLeft = canvas.offsetLeft - contentboxdiv.offsetLeft;
+		var ctxoffsetTop  = canvas.offsetTop  - contentboxdiv.offsetTop;
+		return {
+			left   : element.offsetLeft - ctxoffsetLeft,
+			top    : element.offsetTop  - ctxoffsetTop,
+			right  : element.offsetLeft + element.offsetWidth  - ctxoffsetLeft,
+			bottom : element.offsetTop  + element.offsetHeight - ctxoffsetTop
+		}
+	}
+	
+	function drawArrow(ctx,fromElem,toElem) {
+		var fromRect = getRelativeBoundingRect(fromElem); //.getBoundingClientRect();
+		var toRect   = getRelativeBoundingRect(toElem);   //.getBoundingClientRect();
+		var fromCenterX = (fromRect.left   + fromRect.right) / 2;
+		var fromCenterY = (fromRect.bottom + fromRect.top  ) / 2;
+		var toCenterX   = (toRect.left     + toRect.right  ) / 2;
+		var toCenterY   = (toRect.bottom   + toRect.top    ) / 2;
+
+		// drawRect(ctx,fromRect);
+		// drawRect(ctx,toRect);
+		
+		var fromSides = sides(fromRect);
+		var toSides   = sides(toRect);
+		var fromInter, toInter;
+		for(var i in fromSides) {
+			fromInter = intersection(
+				fromCenterX, fromCenterY, toCenterX, toCenterY,
+				fromSides[i].x1, fromSides[i].y1, fromSides[i].x2, fromSides[i].y2
+			);
+			if(fromInter) break;
+		}
+		for(var i in toSides) {
+			toInter = intersection(
+				fromCenterX, fromCenterY, toCenterX, toCenterY,
+				toSides[i].x1, toSides[i].y1, toSides[i].x2, toSides[i].y2
+			);
+			if(toInter) break;
+		}
+		
+		ctx.beginPath();
+        ctx.moveTo(fromInter.x,fromInter.y);
+        ctx.lineTo(toInter.x,  toInter.y  );
+        ctx.stroke();
+		
+		var theta = 20;
+		var arrowLength = 9;
+		var ratio = 0.7;
+		var vectX, vectY, vect1, vect2, vect3;
+		vectX = fromInter.x - toInter.x;
+		vectY = fromInter.y - toInter.y;
+		vect1 = scaledRotated(vectX, vectY,  Math.PI/180*theta,arrowLength);
+		vect2 = scaledRotated(vectX, vectY,  0                ,arrowLength*ratio);
+		vect3 = scaledRotated(vectX, vectY, -Math.PI/180*theta,arrowLength);
+		ctx.beginPath();
+		ctx.moveTo(toInter.x, toInter.y);
+		ctx.lineTo(toInter.x+vect1.x, toInter.y+vect1.y);
+		ctx.lineTo(toInter.x+vect2.x, toInter.y+vect2.y);
+		ctx.lineTo(toInter.x+vect3.x, toInter.y+vect3.y);
+		ctx.fill();
+		
+		vectX = -vectX; vectY = -vectY;
+		vect1 = scaledRotated(vectX, vectY,  Math.PI/180*theta,arrowLength);
+		vect2 = scaledRotated(vectX, vectY,  0                ,arrowLength*ratio);
+		vect3 = scaledRotated(vectX, vectY, -Math.PI/180*theta,arrowLength);
+		ctx.beginPath();
+		ctx.moveTo(fromInter.x, fromInter.y);
+		ctx.lineTo(fromInter.x+vect1.x, fromInter.y+vect1.y);
+		ctx.lineTo(fromInter.x+vect2.x, fromInter.y+vect2.y);
+		ctx.lineTo(fromInter.x+vect3.x, fromInter.y+vect3.y);
+		ctx.fill();
+	}
+
+	var arrows = [
+		["Dungeon", "Channel", "Spider_Lair", "Overgrown_Shrine", "Pier", 
+		"Arachnid_Nest", "Waste_Pool", "Canyon", "Arid_Lake", "Plateau",
+		"Precinct", "Overgrown_Ruin", "Courtyard", "Shrine", "Abyss"],
+		["Grotto", "Thicket", "Vaal_Pyramid", "Tunnel", "Bog", "Strand",
+		"Mine", "Dark_Forest", "Gorge", "Bazaar", "Academy", "Village_Ruin",
+		"Excavation", "Maze", "Colosseum"],
+		["Dunes", "Mountain_Ledge", "Reef", "Shore", "Graveyard",
+		"Dry_Woods", "Jungle_Valley", "Dry_Peninsula", "Residence",
+		"Volcano", "Springs", "Arsenal", "Waterways", "Palace", "Core"],
+		["Pit", "Cemetery", "Quarry", "Spider_Forest", "Coves", "Colonnade",
+		"Labyrinth", "Orchard", "Underground_River", "Necropolis", 
+		"Crematorium", "Shipyard", "Wasteland", "Palace"],
+		["Tropical_Island", "Arcade", "Mud_Geyser", "Promenade", "Villa",
+		"Catacomb", "Torture_Chamber", "Cells", "Underground_River"],
+		["Crypt", "Sewer", "Ghetto", "Arena", "Underground_Sea", "Temple",
+		"Torture_Chamber"],
+		["Desert", "Wharf", "Museum", "Arena"]
+	];
+
+	function drawAllArrows() {
+		var ctx = document.getElementById("canvas").getContext("2d");
+		var j;
+		for(var i in arrows) {
+			for(j=0; j<arrows[i].length-1; j++) {
+				drawArrow(ctx, document.getElementById("mapdiv_" + arrows[i][j]), document.getElementById("mapdiv_" + arrows[i][j+1]));
+			}
+		}
+	}
+	
+	// ---------------------------------------------------------------
+	// Fetch, parse and apply data
+	
+	function setMapDots(map, code, report) {
+		document.getElementById("mapdiv_" + map).firstChild.firstChild.className = "map_" + code;
+		var matches = report.match(/\[(\d+)\] (.*)/);
+		if(matches) {
+			var timestamp = parseInt(matches[1]);
+			var date = new Date(timestamp*1000 + timestampOffset);
+			var dateString = (date.getHours()<10?"0":"") + date.getHours() + ":" + (date.getMinutes()<10?"0":"") + date.getMinutes();
+			document.getElementById("report_" + map).innerHTML = dateString + "\n<br />\n" + matches[2];
+		} else {
+			document.getElementById("report_" + map).innerHTML = "";
+		}
+	}
+	
+	function loadData(handler) {
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "/warbands/current_data.json", true);
+		xhr.onload = function (e) {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 200) {
+					handler(xhr.responseText);
+				} else {
+					console.error(xhr.statusText);
+				}
+			}
+		}
+		xhr.onerror = function (e) {
+			console.error(xhr.statusText);
+		};
+		xhr.send(null);
+	}
+	
+	function readDataString(dataString) {
+		var dataTwoSlots = JSON.parse(dataString.replace(",,",","));
+		var maps;
+		var code;
+		var i,j;
+		if (typeof(dataTwoSlots)=="object") {
+			for(var slot=0; slot<dataTwoSlots.length; slot++) { // that should be only 0 and 1, for now, for current and previous time slots
+				data = dataTwoSlots[slot];
+				maps = {};
+				for(i in data) {
+					code = false;
+					if(data[i]["band"]) {
+						if(bandShortcuts[data[i]["band"]]) {
+							code = bandShortcuts[data[i]["band"]] + data[i]["dots"];
+						}
+					}
+					if(data[i]["dots"] == "0") {
+						code = "empty";
+					}
+					if(code) {
+						if(!maps[data[i]["name"]]) {
+							maps[data[i]["name"]] = {};
+						}
+						maps[data[i]["name"]][code] = {"num_reports": data[i]["reports_on_710"], "report": data[i]["last_report_text"]};
+					}
+				}
+				allMapData[slot] = maps;
+			}
+		}
+	}
+	
+	function applyData(data) {
+		var most_reports;
+		var code, report, i;
+		var mapDivs = document.getElementsByClassName("map_container");
+		for(i=0; i<mapDivs.length; i++) {
+			mapDivs[i].firstChild.firstChild.className = "map_unknown";
+			document.getElementById("report_" + mapDivs[i].id.substring(7)).innerHTML = "";
+		}
+		for(i in data) {
+			most_reports = -1;
+			for(j in data[i]) {
+				if(data[i][j]["num_reports"] > most_reports) {
+					most_reports = data[i][j]["num_reports"];
+					code = j;
+					report = data[i][j]["report"];
+				}
+			}
+			setMapDots(i,code,report);
+		}
+	}
+	function applyDataString(dataString) {
+		readDataString(dataString);
+		applyData(allMapData[currentSlot]);
+	}
+	
+	function switchSlot() {
+		currentSlot = 1-currentSlot;
+		if(currentSlot == 0) {
+			document.getElementById("switch_slot").innerHTML = "Currently shown: Current activity.";
+		} else {
+			document.getElementById("switch_slot").innerHTML = "Currently shown: Activity from last reset."; 
+		}
+		applyData(allMapData[currentSlot]);
+		if(currentSlot == 1 && firstTimeSwitch) {
+			firstTimeSwitch = false;
+			alert("You are now viewing data from the PREVIOUS reset. Click again to switch back to current data.");
+		}
+	}
+		
+	// ---------------------------------------------------------------
+	// Create tooltips
+	function createTooltips() {
+		var mapDivs = document.getElementsByClassName("map_container");
+		var contentbox = document.getElementById("contentbox");
+		var tooltip, name, tooltipDiv, reportDiv, levelDiv, level;
+		for(var i=0; i<mapDivs.length; i++) {
+			name = mapDivs[i].id.substring(7);
+			tooltip = mapDivs[i].firstChild;
+			tooltipDiv = document.createElement("div");
+			tooltipDiv.innerHTML = name.replace(/_/g, " ");
+			tooltipDiv.className = "tooltipDiv";
+			reportDiv = document.createElement("div");
+			reportDiv.id = "report_" + name;
+			reportDiv.className = "report";
+			tooltipDiv.appendChild(reportDiv);
+			tooltip.appendChild(tooltipDiv);
+			level = mapDivs[i].getAttribute("maplvl");
+			if(level) {
+				levelDiv = document.createElement("div");
+				levelDiv.className = "level";
+				levelDiv.textContent = level;
+				levelDiv.style.left = (parseInt(mapDivs[i].style.left) + 59) + "px";
+				levelDiv.style.top  = (parseInt(mapDivs[i].style.top)  + 33) + "px";
+				contentbox.appendChild(levelDiv);
+			}
+		}
+	}
+	
+	// ---------------------------------------------------------------
+	// Start timer
+	function getResetTime() {
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "http://nembibi.com/warbands/reset_timer", true);
+		xhr.onload = function (e) {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 200) {
+					reset = parseInt(xhr.responseText);
+					startTimer(600, document.getElementById("timer"));
+				} else {
+					console.error(xhr.statusText);
+				}
+			}
+		}
+		xhr.onerror = function (e) {
+			console.error(xhr.statusText);
+		};
+		xhr.send(null);
+	}
+	function startTimer(duration, display) {
+		var timer = duration, minutes, seconds;
+		window.beforeDataUpdate = numTimerUpdatesBetweenDataUpdates;
+		function updateTimer() {
+			if(--window.beforeDataUpdate <= 0) {
+				window.beforeDataUpdate = numTimerUpdatesBetweenDataUpdates;
+				loadData(applyDataString);
+			}
+			var remaining = Math.floor((60 - (new Date()).getMinutes() + reset) % 60);
+			
+			if(remaining < 2 || remaining > 58) {
+				display.textContent = "Reset just happened or is about to happen."
+			} else {
+				display.textContent = remaining + " minutes before reset.";
+			}
+		}
+		updateTimer();
+		setInterval(updateTimer, 1000*updateTimerInterval);
+	}
+	
+	// ---------------------------------------------------------------
+	// Handle searches
+	var searchbox;
+	var map_prefixes;
+	function init_searchbox() {
+		searchbox = document.getElementById("searchbox");
+	}
+	function searchbox_onchange() {
+		var regexp = new RegExp(searchbox.value, "i");
+		for(var i=0; i<mapNames.length; i++) {
+			if(searchbox.value.length >0 && regexp.test(mapNames[i])) {
+				document.getElementById("mapdiv_"+mapNames[i]).className = "map_container highlighted_map_container";
+				} else {
+					document.getElementById("mapdiv_"+mapNames[i]).className = "map_container";
+			};
+		}
+	}
+	
+	// ---------------------------------------------------------------
+	// Main function
+    function onLoad() {
+	
+		// Creates a list of all map names
+		var mapDivs = document.getElementsByClassName("map_container");
+		for(var i=0; i<mapDivs.length; i++) {
+			mapNames.push(mapDivs[i].id.substring(7));
+		}
+		
+		createTooltips();
+		switchSlot();
+		drawAllArrows();
+		init_searchbox();
+		loadData(applyDataString);
+		
+		getResetTime();
+    }
+	
+    </script>
+</head> 
+<body onload="onLoad();" style="width: 1860px;">
+    <canvas id="canvas" width="1900" height="850"></canvas>
+    <div id="contentbox" style="position:absolute; top:10px; left:10px">
+		<div maplvl="68" id="mapdiv_Dungeon"class="map_container" style="position:absolute; left:   0px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="68" id="mapdiv_Grotto" class="map_container" style="position:absolute; left:   0px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="68" id="mapdiv_Dunes" class="map_container" style="position:absolute; left:   0px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="68" id="mapdiv_Pit" class="map_container" style="position:absolute; left:   0px; top:  390px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="68" id="mapdiv_Tropical_Island" class="map_container" style="position:absolute; left:   0px; top:  520px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="68" id="mapdiv_Crypt" class="map_container" style="position:absolute; left:   0px; top:  650px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="68" id="mapdiv_Desert" class="map_container" style="position:absolute; left:   0px; top:  780px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="69" id="mapdiv_Channel" class="map_container" style="position:absolute; left: 130px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="69" id="mapdiv_Thicket" class="map_container" style="position:absolute; left: 130px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="69" id="mapdiv_Mountain_Ledge" class="map_container" style="position:absolute; left: 130px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="69" id="mapdiv_Cemetery" class="map_container" style="position:absolute; left: 130px; top:  390px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="69" id="mapdiv_Arcade" class="map_container" style="position:absolute; left: 130px; top:  520px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="69" id="mapdiv_Sewer" class="map_container" style="position:absolute; left: 130px; top:  650px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="69" id="mapdiv_Wharf" class="map_container" style="position:absolute; left: 130px; top:  780px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="70" id="mapdiv_Spider_Lair" class="map_container" style="position:absolute; left: 260px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="70" id="mapdiv_Vaal_Pyramid" class="map_container" style="position:absolute; left: 260px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="70" id="mapdiv_Reef" class="map_container" style="position:absolute; left: 260px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="70" id="mapdiv_Quarry" class="map_container" style="position:absolute; left: 260px; top:  390px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="70" id="mapdiv_Mud_Geyser" class="map_container" style="position:absolute; left: 260px; top:  520px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="70" id="mapdiv_Ghetto" class="map_container" style="position:absolute; left: 260px; top:  650px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="70" id="mapdiv_Museum" class="map_container" style="position:absolute; left: 260px; top:  780px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="71" id="mapdiv_Overgrown_Shrine" class="map_container" style="position:absolute; left: 390px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="71" id="mapdiv_Tunnel" class="map_container" style="position:absolute; left: 390px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="71" id="mapdiv_Shore" class="map_container" style="position:absolute; left: 390px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="71" id="mapdiv_Spider_Forest" class="map_container" style="position:absolute; left: 390px; top:  390px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="71" id="mapdiv_Promenade" class="map_container" style="position:absolute; left: 390px; top:  520px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="71" id="mapdiv_Arena" class="map_container" style="position:absolute; left: 390px; top:  715px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="72" id="mapdiv_Pier" class="map_container" style="position:absolute; left: 520px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="72" id="mapdiv_Bog" class="map_container" style="position:absolute; left: 520px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="72" id="mapdiv_Graveyard" class="map_container" style="position:absolute; left: 520px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="72" id="mapdiv_Coves" class="map_container" style="position:absolute; left: 520px; top:  390px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="72" id="mapdiv_Villa" class="map_container" style="position:absolute; left: 520px; top:  520px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="72" id="mapdiv_Underground_Sea" class="map_container" style="position:absolute; left: 520px; top:  715px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="73" id="mapdiv_Arachnid_Nest" class="map_container" style="position:absolute; left: 650px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="73" id="mapdiv_Strand" class="map_container" style="position:absolute; left: 650px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="73" id="mapdiv_Dry_Woods" class="map_container" style="position:absolute; left: 650px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="73" id="mapdiv_Colonnade" class="map_container" style="position:absolute; left: 650px; top:  390px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="73" id="mapdiv_Catacomb" class="map_container" style="position:absolute; left: 650px; top:  520px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="73" id="mapdiv_Temple" class="map_container" style="position:absolute; left: 650px; top:  715px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="74" id="mapdiv_Waste_Pool" class="map_container" style="position:absolute; left: 780px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="74" id="mapdiv_Mine" class="map_container" style="position:absolute; left: 780px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="74" id="mapdiv_Jungle_Valley" class="map_container" style="position:absolute; left: 780px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="74" id="mapdiv_Labyrinth" class="map_container" style="position:absolute; left: 780px; top:  390px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="74" id="mapdiv_Torture_Chamber" class="map_container" style="position:absolute; left: 780px; top:  618px; "><span class="tooltips tooltipabove tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="75" id="mapdiv_Canyon" class="map_container" style="position:absolute; left: 910px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="75" id="mapdiv_Dark_Forest" class="map_container" style="position:absolute; left: 910px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="75" id="mapdiv_Dry_Peninsula" class="map_container" style="position:absolute; left: 910px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="75" id="mapdiv_Orchard" class="map_container" style="position:absolute; left: 910px; top:  390px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="75" id="mapdiv_Cells" class="map_container" style="position:absolute; left: 910px; top:  618px; "><span class="tooltips tooltipabove tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="76" id="mapdiv_Arid_Lake" class="map_container" style="position:absolute; left:1040px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="76" id="mapdiv_Gorge" class="map_container" style="position:absolute; left:1040px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="76" id="mapdiv_Residence" class="map_container" style="position:absolute; left:1040px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="76" id="mapdiv_Underground_River" class="map_container" style="position:absolute; left:1040px; top:  504px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="77" id="mapdiv_Plateau" class="map_container" style="position:absolute; left:1170px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="77" id="mapdiv_Bazaar" class="map_container" style="position:absolute; left:1170px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="77" id="mapdiv_Volcano" class="map_container" style="position:absolute; left:1170px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="77" id="mapdiv_Necropolis" class="map_container" style="position:absolute; left:1170px; top:  504px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="78" id="mapdiv_Precinct" class="map_container" style="position:absolute; left:1300px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="78" id="mapdiv_Academy" class="map_container" style="position:absolute; left:1300px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="78" id="mapdiv_Springs" class="map_container" style="position:absolute; left:1300px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="78" id="mapdiv_Crematorium" class="map_container" style="position:absolute; left:1300px; top:  504px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="79" id="mapdiv_Overgrown_Ruin" class="map_container" style="position:absolute; left:1430px; top:    0px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="79" id="mapdiv_Village_Ruin" class="map_container" style="position:absolute; left:1430px; top:  130px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="79" id="mapdiv_Arsenal" class="map_container" style="position:absolute; left:1430px; top:  260px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="79" id="mapdiv_Shipyard" class="map_container" style="position:absolute; left:1430px; top:  504px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="80" id="mapdiv_Courtyard" class="map_container" style="position:absolute; left:1560px; top:    0px; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="80" id="mapdiv_Excavation" class="map_container" style="position:absolute; left:1560px; top:  130px; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="80" id="mapdiv_Waterways" class="map_container" style="position:absolute; left:1560px; top:  260px; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="80" id="mapdiv_Wasteland" class="map_container" style="position:absolute; left:1560px; top:  504px; "><span class="tooltips tooltipabove tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="81" id="mapdiv_Shrine" class="map_container" style="position:absolute; left:1690px; top:    0px; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="81" id="mapdiv_Maze" class="map_container" style="position:absolute; left:1690px; top:  130px; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="81" id="mapdiv_Palace" class="map_container" style="position:absolute; left:1690px; top:  382px; "><span class="tooltips tooltipabove tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div maplvl="82" id="mapdiv_Abyss" class="map_container" style="position:absolute; left:1820px; top:    0px; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="82" id="mapdiv_Colosseum" class="map_container" style="position:absolute; left:1820px; top:  130px; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div maplvl="82" id="mapdiv_Core" class="map_container" style="position:absolute; left:1820px; top:  382px; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+
+
+		<div id="mapdiv_Poorjoy's_Asylum" class="map_container" style="position:absolute; left: 673px; top:  770px; "><span class="tooltips tooltipabove"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_Oba's_Cursed_Trove" class="map_container" style="position:absolute; left: 803px; top:  673px; "><span class="tooltips tooltipabove tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_Olmec's_Sanctum" class="map_container" style="position:absolute; left: 627px; top:  575px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_Vaal_Temple" class="map_container" style="position:absolute; left:1797px; top:  437; "><span class="tooltips tooltipleft"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_Mao_Kun" class="map_container" style="position:absolute; left: 283px; top:  315px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_Maelstrom_of_Chaos" class="map_container" style="position:absolute; left: 153px; top:  315px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_Acton's_Nightmare" class="map_container" style="position:absolute; left: 413px; top:   55px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_The_Apex_of_Sacrifice" class="map_container" style="position:absolute; left: 230px; top:  75px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_The_Alluring_Abyss" class="map_container" style="position:absolute; left: 285px; top:  65px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_Vaults_of_Atziri" class="map_container" style="position:absolute; left: 283px; top:   185px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		<div id="mapdiv_Whakawairua_Tuahu" class="map_container" style="position:absolute; left: 673px; top:  185px; "><span class="tooltips"><div class="map_unknown"><div></div></div></span></div>
+		
+		
+		<div style="position:absolute; left: 1040px; top:  615px; width: 800px; height: 220px;" id="legend">
+			<div id="timer"></div>
+			
+			<hr />
+			
+			<div id="switch_slot" onclick="switchSlot();"></div>
+			
+			<hr />
+			
+			<div>If this page is too slow, try <a href="http://nembibi.com/warbands/" target="_top"> this one</a>. Splitting the users between both should balance the load.</div>
+			
+			<hr />
+			
+			Filter maps by name: <input id="searchbox" type="text" placeholder="Map name" spellcheck="false" oninput="searchbox_onchange();" autofocus="autofocus"/>
+			
+			<hr />
+						
+			<div id="donatediv">
+				<table>
+					<tr>
+						<td><div>If you enjoy this website, please consider donating to help pay for the host and development time. You can also or throw me a message in game (@BulokuChansu).</div></td>
+						<td>
+							<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+								<input type="hidden" name="cmd" value="_s-xclick">
+								<input type="hidden" name="hosted_button_id" value="QUTTVR82823PQ">
+								<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+								<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+							</form>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+    </div>
+</body>
+</html> 
