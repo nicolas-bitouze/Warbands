@@ -8,7 +8,7 @@ body {
   color: white !important;
 }
 
-.container{
+.container, .container-fluid{
   padding-top:50px;
 }
 
