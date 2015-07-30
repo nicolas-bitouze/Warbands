@@ -25,16 +25,21 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     showDots : -1
   }
   
+  $scope.search = '';
+  
   function update(){
-    $http.get('update.php').success(function(data){
+    $http.get('http://nembibi.com/warbands/current_data.json').success(function(data){
       $scope.maps = angular.copy($scope.initMaps);
       $scope.dots4 = [];
       // Iterate over each of the CURRENT warbands
       angular.forEach(data[0], function(object, key){
         // Parse the data into a new object, with the map name as key
         angular.forEach($scope.maps, function(maps, lv){
-
+          // Only overwrite maps with data.
           if(maps.hasOwnProperty(object.name)){
+            object.last_report_text = object.last_report_text.replace(/\[\d+\] /g, '');
+            object.last_report_name = object.last_report_text.match(/#.*:/)[0].replace(/#/,'@').replace(/:/,'');
+            object.last_report_text = object.last_report_text.replace(/#.*: /, '');
             $scope.maps[lv][object.name] = object;
             // Parse the 4dot maps to use in the sidepanel
 
@@ -45,17 +50,28 @@ app.controller('mainController', function($scope, $http, $log, $interval){
       })
     });
   }
-  
+  $http.get('http://nembibi.com/warbands/reset_timer').success(function(data){
+    $scope.resetTime = data;
+    timer();
+  });
   function timer(){
-    var t = 60 - new Date().getMinutes()- 41;
-    var plural = t!=1 ? 's' : '';
-    $scope.timeToReset = t + ' minute' + plural;
+    var d = new Date();
+    addHour = new Date().getMinutes() > $scope.resetTime ? 1 : 0
+    d.setHours(new Date().getHours() + addHour);
+    d.setMinutes($scope.resetTime);
+    d.setSeconds(0);
+    t = new Date().getTime();
+    
+    tt = Math.ceil((d.getTime() - t) / 60000);
+    
+    var plural = tt!=1 ? 's' : '';
+    $scope.timeToReset = tt + ' minute' + plural;
   }
   
   update();
-  timer();
   
-  $interval(function(){ update() }, 5000);
+  
+  $interval(function(){ update() }, 10000);
   $interval(function(){ timer() }, 1000)
   $scope.mapPopover = {
     templateUrl : 'mapPopover.html'
@@ -86,9 +102,15 @@ app.controller('mainController', function($scope, $http, $log, $interval){
   
   
   $scope.showMaps = function(map, dots){
-    if(dots == -1) return true; // Show all
-    if(map.dots == 4 && dots == 4) return true; // Show 4d only
-    if(dots == 0 && !map.dots) return true; // Show unknown only
+    if($scope.search != ''){
+      var s = $scope.search.replace(/\ /g, '_');
+      re = new RegExp(s, "gi");
+      return re.test(map.name);
+    } else {
+      if(dots == -1) return true; // Show all
+      if(map.dots == 4 && dots == 4) return true; // Show 4d only
+      if(dots == 0 && !map.dots) return true; // Show unknown only
+    }
   }
   
   
@@ -112,3 +134,10 @@ app.filter('fixName', function(){
     return input.replace(/\_/g, ' ');
   }
 });
+
+app.filter('pluralize', function(){
+  return function(input, word){
+    var r = input + ' ' + word;
+    return input == 1 ? r : r+'s';
+  }
+})

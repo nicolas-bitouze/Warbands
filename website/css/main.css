@@ -80,8 +80,12 @@ body {
   background-color: rgba(0,0,128,0.3) !important;
 }
 
+blockquote{
+  font-size: 1em !important;
+}
+
 .popover{
-  width: 200px !important;
+  min-width: 230px !important;
   color: #333 !important;
 }
 

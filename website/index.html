@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app" lang="en">
+<html ng-app="app" lang="en" ng-cloak>
   <head>
     <title>Warbands Status</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -26,6 +26,7 @@
           </div>
           <!-- List maps -->
           <div 
+               popover-append-to-body="true"
                popover-template="mapPopover.templateUrl" 
                popover-title="{{name | fixName}}" 
                popover-trigger="mouseenter" 
@@ -45,7 +46,7 @@
       <!-- Toolbox -->
       <div class="toolbox col-xs-12 col-md-2">
         <!-- Toggle Show All/4dots/unknown -->
-        <div class="funkyradio">
+        <div class="funkyradio" ng-click="search=''">
           <div class="funkyradio-default">
             <input type="radio" name="showDots" ng-model="settings.showDots" value="-1" id="showDots1" checked />
             <label for="showDots1">Show all</label>
@@ -73,7 +74,6 @@
         <!-- /show current 4 dots -->
         <div class="form-group">
           <input type="text" tabindex="1" ng-model="search" class="form-control" placeholder="Quick search">
-          {{search}}
         </div>
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -94,9 +94,10 @@
   
   <script type="text/ng-template" id="mapPopover.html">
     <div>
-      <p>Current status: {{map.band == 'None' ? 'Empty' : map.band ? map.band : 'Unknown'}}</p>
-      <p ng-show="{{map.dots > 0}}">{{map.dots}} dots</p>
+      <p>Current status: <b>{{map.band == 'None' ? 'Empty' : map.band ? map.band : 'Unknown'}}</b></p>
+      <p ng-show="{{map.dots > 0}}">{{map.dots | pluralize : 'dot'}}</p>
       <p ng-hide="{{map.band == 'None' || !map.band}}">Identify: <b>{{bandLoot(map.band)}}</b></p>
+      <blockquote style="text-align:left !important" ng-hide="!map.band"><b>{{map.last_report_name}}</b><br/><i>{{map.last_report_text}}</i></blockquote>
     </div>
   </script>
   
