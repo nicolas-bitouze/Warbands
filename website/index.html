@@ -30,12 +30,13 @@
                popover-template="mapPopover.templateUrl" 
                popover-title="{{name | fixName}}" 
                popover-trigger="mouseenter" 
-               popover-placement="bottom" 
+               popover-placement="{{level >= 80 ? 'top' : 'bottom'}}" 
                class="map {{map.band}} d{{map.dots}}" 
                ng-repeat="(name, map) in maps" 
                ng-show="showMaps(map, settings.showDots);">
             
             <div style="background-image:url(MapIcon/{{name | fixQuote}}.png);"></div>
+            {{k}}
           </div>
           <!-- /List maps -->
         </div>

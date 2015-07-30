@@ -37,8 +37,11 @@ app.controller('mainController', function($scope, $http, $log, $interval){
         angular.forEach($scope.maps, function(maps, lv){
           // Only overwrite maps with data.
           if(maps.hasOwnProperty(object.name)){
+            // Remove the timestamp in front of the message
             object.last_report_text = object.last_report_text.replace(/\[\d+\] /g, '');
+            // Rewrite the # into an @, and remove the colon at the end
             object.last_report_name = object.last_report_text.match(/#.*:/)[0].replace(/#/,'@').replace(/:/,'');
+            // remove everything that's not a part of the message
             object.last_report_text = object.last_report_text.replace(/#.*: /, '');
             $scope.maps[lv][object.name] = object;
             // Parse the 4dot maps to use in the sidepanel
@@ -91,6 +94,7 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     }
   }
   
+<<<<<<< HEAD
   $scope.searchMaps = function(mapName, search){
     var re = new RegExp(search, "gi");
     if(search == '') return true;
@@ -99,8 +103,10 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     return false;
   }
   
+=======
+>>>>>>> origin/beta
   $scope.showMaps = function(map, dots){
-    if($scope.search != ''){
+    if($scope.search){
       var s = $scope.search.replace(/\ /g, '_');
       re = new RegExp(s, "i");
       return re.test(map.name);
