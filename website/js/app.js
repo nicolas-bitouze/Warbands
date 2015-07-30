@@ -4,21 +4,21 @@ app.controller('mainController', function($scope, $http, $log, $interval){
   
   // Initialize a list of all maps 
   $scope.initMaps = {
-	68 : {"Crypt":{},"Desert":{},"Dunes":{},"Dungeon":{},"Grotto":{},"Pit":{},"Tropical_Island":{}},
-	69 : {"Arcade":{},"Cemetery":{},"Channel":{},"Mountain_Ledge":{},"Sewer":{},"Thicket":{},"Wharf":{},"Maelstrom_of_Chaos":{},"Vaults_of_Atziri":{}},
-	70 : {"Ghetto":{},"Mud_Geyser":{},"Museum":{},"Quarry":{},"Reef":{},"Spider_Lair":{},"Vaal_Pyramid":{},"The_Apex_of_Sacrifice":{},"Mao_Kun":{}},
-	71 : {"Arena":{},"Overgrown_Shrine":{},"Promenade":{},"Shore":{},"Spider_Forest":{},"Tunnel":{},"Acton\'s_Nightmare":{}},
-	72 : {"Bog":{},"Coves":{},"Graveyard":{},"Pier":{},"Underground_Sea":{},"Villa":{}},
-	73 : {"Arachnid_Nest":{},"Catacomb":{},"Colonnade":{},"Dry_Woods":{},"Temple":{},"Strand":{},"Poorjoy\'s_Asylum":{},"Whakawairua_Tuahu":{}},
-	74 : {"Jungle_Valley":{},"Labyrinth":{},"Mine":{},"Torture_Chamber":{},"Waste_Pool":{},"Oba\'s_Cursed_Trove":{}},
-	75 : {"Canyon":{},"Cells":{},"Dark_Forest":{},"Dry_Peninsula":{},"Orchard":{}},
-	76 : {"Arid_Lake":{},"Gorge":{},"Residence":{},"Underground_River":{}},
-	77 : {"Bazaar":{},"Necropolis":{},"Plateau":{},"Volcano":{}},
-	78 : {"Academy":{},"Crematorium":{},"Precinct":{},"Springs":{}},
-	79 : {"Arsenal":{},"Overgrown_Ruin":{},"Shipyard":{},"Village_Ruin":{},"Vaal_Temple":{}},
-	80 : {"Courtyard":{},"Excavation":{},"Wasteland":{},"Waterways":{},"The_Alluring_Abyss":{}},
-	81 : {"Maze":{},"Palace":{},"Shrine":{},"Olmec\'s_Sanctum":{}},
-	82 : {"Abyss":{},"Colosseum":{},"Core":{}}
+    68 : {"Crypt":{},"Desert":{},"Dunes":{},"Dungeon":{},"Grotto":{},"Pit":{},"Tropical_Island":{}},
+    69 : {"Arcade":{},"Cemetery":{},"Channel":{},"Mountain_Ledge":{},"Sewer":{},"Thicket":{},"Wharf":{},"Maelstrom_of_Chaos":{},"Vaults_of_Atziri":{}},
+    70 : {"Ghetto":{},"Mud_Geyser":{},"Museum":{},"Quarry":{},"Reef":{},"Spider_Lair":{},"Vaal_Pyramid":{},"The_Apex_of_Sacrifice":{},"Mao_Kun":{}},
+    71 : {"Arena":{},"Overgrown_Shrine":{},"Promenade":{},"Shore":{},"Spider_Forest":{},"Tunnel":{},"Acton\'s_Nightmare":{}},
+    72 : {"Bog":{},"Coves":{},"Graveyard":{},"Pier":{},"Underground_Sea":{},"Villa":{}},
+    73 : {"Arachnid_Nest":{},"Catacomb":{},"Colonnade":{},"Dry_Woods":{},"Temple":{},"Strand":{},"Poorjoy\'s_Asylum":{},"Whakawairua_Tuahu":{}},
+    74 : {"Jungle_Valley":{},"Labyrinth":{},"Mine":{},"Torture_Chamber":{},"Waste_Pool":{},"Oba\'s_Cursed_Trove":{}},
+    75 : {"Canyon":{},"Cells":{},"Dark_Forest":{},"Dry_Peninsula":{},"Orchard":{}},
+    76 : {"Arid_Lake":{},"Gorge":{},"Residence":{},"Underground_River":{}},
+    77 : {"Bazaar":{},"Necropolis":{},"Plateau":{},"Volcano":{}},
+    78 : {"Academy":{},"Crematorium":{},"Precinct":{},"Springs":{}},
+    79 : {"Arsenal":{},"Overgrown_Ruin":{},"Shipyard":{},"Village_Ruin":{},"Vaal_Temple":{}},
+    80 : {"Courtyard":{},"Excavation":{},"Wasteland":{},"Waterways":{},"The_Alluring_Abyss":{}},
+    81 : {"Maze":{},"Palace":{},"Shrine":{},"Olmec\'s_Sanctum":{}},
+    82 : {"Abyss":{},"Colosseum":{},"Core":{}}
 }
   
   $scope.settings = {
@@ -99,12 +99,10 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     return false;
   }
   
-  
-  
   $scope.showMaps = function(map, dots){
     if($scope.search != ''){
       var s = $scope.search.replace(/\ /g, '_');
-      re = new RegExp(s, "gi");
+      re = new RegExp(s, "i");
       return re.test(map.name);
     } else {
       if(dots == -1) return true; // Show all
@@ -113,7 +111,23 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     }
   }
   
+  $scope.showRows = function(level) {
+    var rowIsEmpty = true;
+    angular.forEach($scope.maps[level], function(_, map){
+	  if(!rowIsEmpty) return;
+	  if($scope.showMaps(map, $scope.settings.showDots)) rowIsEmpty = false;
+	});
+	return true;
+	return !rowIsEmpty;
+  }
   
+  $scope.rowIsOdd = function(level) {
+    var isOdd = true;
+    angular.forEach($scope.maps, function(maps, lv){
+      if(lv < level && $scope.showRows(lv)) isOdd = !isOdd;
+    });
+    if(isOdd) return "odd";
+  }
   
   
   

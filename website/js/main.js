@@ -1,4 +1,4 @@
-var updateDataInterval = 20;
+	var updateDataInterval = 20;
 	var updateTimerInterval = 10;
 	var reset = 23.5;
 

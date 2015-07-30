@@ -20,7 +20,7 @@
       <!-- Map content -->
       <div class="maps col-xs-12 col-md-10">
         <!-- Map levels -->
-        <div class="mapSpan col-xs-12" ng-class-odd="'odd'" ng-repeat="(level, maps) in maps">
+        <div class="mapSpan col-xs-12" ng-class="rowIsOdd(level)" ng-repeat="(level, maps) in maps" ng-show="showRows(level)">
           <div style="float:left;font-size:30px;height:70px;line-height:70px;">
           {{level}}
           </div>
