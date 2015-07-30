@@ -634,7 +634,7 @@ span:hover.tooltipleft > div.tooltipDiv {
 		searchbox = document.getElementById("searchbox");
 	}
 	function searchbox_onchange() {
-		var regexp = new RegExp(searchbox.value, "i");
+		var regexp = new RegExp(searchbox.value.replace(" ","_"), "i");
 		for(var i=0; i<mapNames.length; i++) {
 			if(searchbox.value.length >0 && regexp.test(mapNames[i])) {
 				document.getElementById("mapdiv_"+mapNames[i]).className = "map_container highlighted_map_container";

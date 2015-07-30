@@ -136,19 +136,19 @@ span:hover.tooltipleft > div.tooltipDiv {
 
 .map_b1, .map_b2, .map_b3, .map_b4 {
 	background: rgba(0,128,0,0.3);
-	border-top: 8px solid green;
+	border-top: 8px solid blue;
 	border-right: 8px solid rgba(0,0,0,0);
 	border-bottom: 8px solid rgba(0,0,0,0);
     border-left: 8px solid rgba(0,0,0,0);
 }
 .map_b2, .map_b3, .map_b4 {
-	border-right: 8px solid green;
+	border-right: 8px solid blue;
 }
 .map_b3, .map_b4 {
-	border-bottom: 8px solid green;
+	border-bottom: 8px solid blue;
 }
 .map_b4 {
-    border-left: 8px solid green;
+    border-left: 8px solid blue;
 }
 
 .map_r1, .map_r2, .map_r3, .map_r4 {
@@ -170,19 +170,19 @@ span:hover.tooltipleft > div.tooltipDiv {
 
 .map_m1, .map_m2, .map_m3, .map_m4 {
 	background: rgba(0,0,128,0.3);
-	border-top: 8px solid blue;
+	border-top: 8px solid green;
 	border-right: 8px solid rgba(0,0,0,0);
 	border-bottom: 8px solid rgba(0,0,0,0);
     border-left: 8px solid rgba(0,0,0,0);
 }
 .map_m2, .map_m3, .map_m4 {
-	border-right: 8px solid blue;
+	border-right: 8px solid green;
 }
 .map_m3, .map_m4 {
-	border-bottom: 8px solid blue;
+	border-bottom: 8px solid green;
 }
 .map_m4 {
-    border-left: 8px solid blue;
+    border-left: 8px solid green;
 }
 
 #mapdiv\_Abyss > span > div > div                   { background-position: -0005px 0px; }
@@ -634,7 +634,7 @@ span:hover.tooltipleft > div.tooltipDiv {
 		searchbox = document.getElementById("searchbox");
 	}
 	function searchbox_onchange() {
-		var regexp = new RegExp(searchbox.value, "i");
+		var regexp = new RegExp(searchbox.value.replace(" ","_"), "i");
 		for(var i=0; i<mapNames.length; i++) {
 			if(searchbox.value.length >0 && regexp.test(mapNames[i])) {
 				document.getElementById("mapdiv_"+mapNames[i]).className = "map_container highlighted_map_container";
