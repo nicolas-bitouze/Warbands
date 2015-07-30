@@ -19,7 +19,15 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     80 : {"Courtyard":{},"Excavation":{},"Wasteland":{},"Waterways":{},"The_Alluring_Abyss":{}},
     81 : {"Maze":{},"Palace":{},"Shrine":{},"Olmec\'s_Sanctum":{}},
     82 : {"Abyss":{},"Colosseum":{},"Core":{}}
-}
+  }
+  
+  {
+    angular.forEach($scope.initMaps, function(maps,_) {
+	  angular.forEach(maps, function(object, key){
+	    object.name = key;
+      });
+	});
+  }
   
   $scope.settings = {
     showDots : -1
@@ -94,7 +102,6 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     }
   }
   
-<<<<<<< HEAD
   $scope.searchMaps = function(mapName, search){
     var re = new RegExp(search, "gi");
     if(search == '') return true;
@@ -103,8 +110,6 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     return false;
   }
   
-=======
->>>>>>> origin/beta
   $scope.showMaps = function(map, dots){
     if($scope.search){
       var s = $scope.search.replace(/\ /g, '_');
@@ -119,11 +124,10 @@ app.controller('mainController', function($scope, $http, $log, $interval){
   
   $scope.showRows = function(level) {
     var rowIsEmpty = true;
-    angular.forEach($scope.maps[level], function(_, map){
+    angular.forEach($scope.maps[level], function(map, _){
 	  if(!rowIsEmpty) return;
 	  if($scope.showMaps(map, $scope.settings.showDots)) rowIsEmpty = false;
 	});
-	return true;
 	return !rowIsEmpty;
   }
   
