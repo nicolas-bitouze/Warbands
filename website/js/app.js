@@ -33,14 +33,40 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     showDots : -1
   }
   
+  $scope.date = new Date().getTime();
   $scope.search = '';
+  $scope.autoUpdate = true;
+  
+  $scope.$watch("date", function(j,_){
+    d = new Date(j);
+    d.setHours(0);
+    d.setMinutes(0);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+    $scope.unix = d.getTime();
+  })
+  
+  $scope.$watch('dateHour', function(j,_){
+    if(j==$scope.getCurrentTimeslot()){
+      $scope.autoUpdate = true;
+      update();
+    } else {
+      $scope.autoUpdate = false;
+      $scope.getLegacy(j);
+    }
+  })
   
   function update(){
-    $http.get('http://nembibi.com/warbands/current_data.json').success(function(data){
-      $scope.maps = angular.copy($scope.initMaps);
+    $http.get('current_data.json').success(function(data){
+      updateMaps(data);
+    });
+  }
+  
+  function updateMaps(data){
+    $scope.maps = angular.copy($scope.initMaps);
       $scope.dots4 = [];
       // Iterate over each of the CURRENT warbands
-      angular.forEach(data[0], function(object, key){
+      angular.forEach(data.maps, function(object, key){
         // Parse the data into a new object, with the map name as key
         angular.forEach($scope.maps, function(maps, lv){
           // Only overwrite maps with data.
@@ -51,20 +77,38 @@ app.controller('mainController', function($scope, $http, $log, $interval){
             object.last_report_name = object.last_report_text.match(/#.*:/)[0].replace(/#/,'@').replace(/:/,'');
             // remove everything that's not a part of the message
             object.last_report_text = object.last_report_text.replace(/#.*: /, '');
+            
             $scope.maps[lv][object.name] = object;
             // Parse the 4dot maps to use in the sidepanel
 
             if(object.dots == "4") $scope.dots4.push(object.name);
           }
         })
-
       })
-    });
   }
-  $http.get('http://nembibi.com/warbands/reset_timer').success(function(data){
+  
+  $http.get('http://nembibi.com/warbands/reset_timer', {cache:true}).success(function(data){
     $scope.resetTime = data;
     timer();
   });
+  
+  $scope.getLegacy= function(timeslot){
+    $scope.showLegacyError = false;
+    $scope.autoUpdate = false;
+    $scope.timeslot = timeslot;
+    console.log(timeslot);
+    // Don't bother requesting data which doesn't exist...
+    var currentTimeslot = $scope.getCurrentTimeslot();
+    if(timeslot>=399362 && timeslot <= currentTimeslot){
+      $http.get('legacy/data_'+timeslot+'.json').success(function(data){
+        updateMaps(data);
+      });
+    } else {
+      $scope.maps = angular.copy($scope.initMaps);
+      $scope.showLegacyError = true;
+    }
+  }
+  
   function timer(){
     var d = new Date();
     addHour = new Date().getMinutes() > $scope.resetTime ? 1 : 0
@@ -82,8 +126,9 @@ app.controller('mainController', function($scope, $http, $log, $interval){
   update();
   
   
-  $interval(function(){ update() }, 10000);
+  $interval(function(){ if($scope.autoUpdate) update() }, 2000);
   $interval(function(){ timer() }, 1000)
+  
   $scope.mapPopover = {
     templateUrl : 'mapPopover.html'
   }
@@ -106,7 +151,6 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     var re = new RegExp(search, "gi");
     if(search == '') return true;
     if(re.test(mapName)) return true;
-    console.log(mapName);
     return false;
   }
   
@@ -139,6 +183,12 @@ app.controller('mainController', function($scope, $http, $log, $interval){
     if(isOdd) return "odd";
   }
   
+  $scope.getCurrentTimeslot = function(){
+    return Math.floor(new Date().getTime() / 3600000);
+  }
+  $scope.getCurrentTime = function(){
+    return new Date();
+  }
   
   
   
@@ -163,5 +213,33 @@ app.filter('pluralize', function(){
   return function(input, word){
     var r = input + ' ' + word;
     return input == 1 ? r : r+'s';
+  }
+});
+
+app.filter('makeRange', function() {
+  return function(input) {
+    var lowBound, highBound;
+    switch (input.length) {
+    case 1:
+      lowBound = 0;
+      highBound = parseInt(input[0]) - 1;
+      break;
+    case 2:
+      lowBound = parseInt(input[0]);
+      highBound = parseInt(input[1]);
+      break;
+    default:
+      return input;
+    }
+    var result = [];
+    for (var i = lowBound; i <= highBound; i++)
+      result.push(i);
+    return result;
+  };
+});
+
+app.filter('toTimeslot', function(){
+  return function(input){
+    return Math.floor(input/3600000);
   }
 })

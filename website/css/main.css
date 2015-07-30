@@ -71,13 +71,13 @@ body {
 }
 
 .Brinerot{ 
-  border-color: green; 
-  background-color: rgba(0,128,0,0.3) !important;
+  border-color: blue; 
+  background-color: rgba(0,0,128,0.3) !important;
 }
 
 .Mutewind{ 
-  border-color: blue; 
-  background-color: rgba(0,0,128,0.3) !important;
+  border-color: green; 
+  background-color: rgba(0,128,0,0.3) !important;
 }
 
 blockquote{
@@ -97,6 +97,14 @@ blockquote{
   font-weight: bold;
 }
 
+.btn-sm{
+  padding-left:9px;
+  padding-right:9px;
+}
+
+div[ng-switch="datepickerMode"]{
+  padding: 7px;
+}
 
 
 .panel{

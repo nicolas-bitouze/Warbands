@@ -16,9 +16,9 @@
   
   <body ng-controller="mainController">
     
-    <div class="container-fluid">
+    <div class="container">
       <!-- Map content -->
-      <div class="maps col-xs-12 col-md-10">
+      <div class="maps col-xs-12 col-md-9 col-xl-11">
         <!-- Map levels -->
         <div class="mapSpan col-xs-12" ng-class="rowIsOdd(level)" ng-repeat="(level, maps) in maps" ng-show="showRows(level)">
           <div style="float:left;font-size:30px;height:70px;line-height:70px;">
@@ -45,7 +45,7 @@
       <!-- /Map content -->
       
       <!-- Toolbox -->
-      <div class="toolbox col-xs-12 col-md-2">
+      <div class="toolbox col-xs-12 col-md-3 col-xl-1">
         <!-- Toggle Show All/4dots/unknown -->
         <div class="funkyradio" ng-click="search=''">
           <div class="funkyradio-default">
@@ -82,6 +82,20 @@
           </div>
           <div class="panel-body">
             {{timeToReset}}
+          </div>
+        </div>
+        <div style="display:inline-block; min-height:290px;width:100%">
+          <datepicker ng-model="date" min-date="'7-24-2015'" show-weeks="false" year-range="1" format-day-title="MMMM" class="well well-sm" custom-class="getDayClass(date, mode)">
+          </datepicker>
+          <div class="form-group">
+            <select class="form-control" ng-model="dateHour" ng-init="dateHour = getCurrentTimeslot()">
+              <option value="{{(unix | toTimeslot) + n}}" ng-disabled="(unix | toTimeslot) + n > getCurrentTimeslot()" ng-selected="$first" ng-repeat="n in [0,22] | makeRange">{{n<10 ? '0'+n : n}}:00 - {{n+1<10 ? '0'+ (n+1) : n+1}}:00 {{(unix | toTimeslot) + n == getCurrentTimeslot() ? '(Live)' : ''}}</option>
+              <option value="{{(unix | toTimeslot) + 23}}" ng-disabled="(unix | toTimeslot) + 23 > getCurrentTimeslot()">23:00 - 00:00 {{(unix | toTimeslot) + n == getCurrentTimeslot() ? '(Live)' : ''}}</option>
+            </select>
+          </div>
+          <div class="form-group" ng-show="dateHour != getCurrentTimeslot()">
+            <p>You're currently viewing old Warband cycles.</p>
+            <button class="btn btn-danger btn-block" ng-click="autoUpdate = true;date=getCurrentTime();dateHour=getCurrentTimeslot();">View live data</button>
           </div>
         </div>
       </div>
