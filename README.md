@@ -1,4 +1,4 @@
 #TODO:
-Fix quick search  
+History of past cycles
 
-Hide parent row when all maps in that row is hidden
+Fix calendar month select button width
