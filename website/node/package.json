@@ -1,0 +1,10 @@
+{
+    "name": "PoEWarbands",
+    "version": "0.0.0",
+    "description": "A utility website that tracks warbands in Path of Exile.",
+    "dependencies": {
+        "express.io": "latest",
+        "express": "latest"
+    },
+    "author": "developer"
+}
