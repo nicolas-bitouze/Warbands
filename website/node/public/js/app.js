@@ -159,6 +159,11 @@ app.controller('mainController', function($scope, $http, $log, $interval, $timeo
   }
  
   function timer(){
+    // User is viewing live data
+    if($scope.autoUpdate){
+      $scope.date = $scope.getCurrentTime();
+      $scope.dateHour = $scope.getCurrentTimeslot();
+    }
     var d = new Date();
     addHour = new Date().getMinutes() > $scope.resetTime ? 1 : 0
     d.setHours(new Date().getHours() + addHour);
