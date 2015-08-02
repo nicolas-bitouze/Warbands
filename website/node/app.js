@@ -2,12 +2,14 @@ var app = require('express.io')();
 var fs = require('fs');
 var express = require('express');
 
+var dataPath = 'current_data.json';
+
 app.http().io();
 
 app.use(express.static(__dirname + '/public'));
 
 app.io.route('init', function(req){
-  var jsonObj = fs.readFileSync(__dirname + '/current_data.json', 'utf8');
+  var jsonObj = fs.readFileSync(dataPath, 'utf8');
   req.io.respond({
     success : jsonObj
   })
@@ -26,13 +28,13 @@ app.io.route('loadLegacy', function(req){
   });
 });
 
-fs.watchFile(__dirname + '/current_data.json', function (event, filename) {
+fs.watchFile(dataPath, function (event, filename) {
   console.log('Updated!');
-  app.io.broadcast('update', fs.readFileSync(__dirname + '/current_data.json', 'utf8'));
+  app.io.broadcast('update', fs.readFileSync(dataPath, 'utf8'));
 });
 
 // Start the server
-app.listen(3700);
+app.listen(80);
 console.log('server started');
 // Routes
 app.get('/', function(req, res) {

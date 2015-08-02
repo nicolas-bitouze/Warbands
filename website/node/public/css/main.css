@@ -1,32 +1,106 @@
 body {
-	background: -webkit-linear-gradient(90deg, #485563 10%, #29323c 90%); /* Chrome 10+, Saf5.1+ */
-	background:    -moz-linear-gradient(90deg, #485563 10%, #29323c 90%); /* FF3.6+ */
-	background:     -ms-linear-gradient(90deg, #485563 10%, #29323c 90%); /* IE10 */
-	background:      -o-linear-gradient(90deg, #485563 10%, #29323c 90%); /* Opera 11.10+ */
-	background:         linear-gradient(90deg, #485563 10%, #29323c 90%); /* W3C */
-  
   color: white !important;
+  background: -webkit-linear-gradient(90deg, #485563 10%, #29323c 90%); /* Chrome 10+, Saf5.1+ */
+  background:    -moz-linear-gradient(90deg, #485563 10%, #29323c 90%); /* FF3.6+ */
+  background:     -ms-linear-gradient(90deg, #485563 10%, #29323c 90%); /* IE10 */
+  background:      -o-linear-gradient(90deg, #485563 10%, #29323c 90%); /* Opera 11.10+ */
+  background:         linear-gradient(90deg, #485563 10%, #29323c 90%); /* W3C */
+}
+
+/* ScrollBar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(128,128,128,1);
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+ -webkit-box-shadow: inset 0 0 30px rgba(255,255,255,1);
+}
+.flip {
+  transform:rotateX(180deg);
+  -ms-transform:rotateX(180deg);
+  -webkit-transform:rotateX(180deg);
+}
+/* /ScrollBar */
+
+.comma-separated-list+.comma-separated-list:before {
+  content: ', ';
+}
+.comma-separated-list:last-child:after {
+  content: '.';
+}
+
+.forest-map-hidden {
+  opacity: 0.04!important;
+  pointer-events:none;
+}
+.canvas-hidden {
+  opacity: 0.08;
+}
+
+.toolbox-forest {
+  z-index: 10;
+  height: 100%;
+  padding: 20px;
+  float: right;
+  margin-left: 30px;
+}
+
+.scrollable-maps-container {
+  overflow-x: auto;
+  overflow-y: visible;
+  height: 900px;
+  -webkit-box-shadow: 7px -7px 5px 0px rgba(0,0,0,0.7);
+  -moz-box-shadow: 7px -7px 5px 0px rgba(0,0,0,0.7);
+  box-shadow: 7px -7px 5px 0px rgba(0,0,0,0.7);
+}
+.toolbox {
+  -webkit-box-shadow: 7px 7px 5px 0px rgba(0,0,0,0.7);
+  -moz-box-shadow: 7px 7px 5px 0px rgba(0,0,0,0.7);
+  box-shadow: 7px 7px 5px 0px rgba(0,0,0,0.7);
+}
+.toolbox, .scrollable-maps-container {
+  background: rgba(64,76,100,1);
+  background: -moz-linear-gradient(left, rgba(64,76,100,1) 0%, rgba(43,51,67,1) 59%, rgba(57,68,89,1) 100%);
+  background: -webkit-gradient(left top, right top, color-stop(0%, rgba(64,76,100,1)), color-stop(59%, rgba(43,51,67,1)), color-stop(100%, rgba(57,68,89,1)));
+  background: -webkit-linear-gradient(left, rgba(64,76,100,1) 0%, rgba(43,51,67,1) 59%, rgba(57,68,89,1) 100%);
+  background: -o-linear-gradient(left, rgba(64,76,100,1) 0%, rgba(43,51,67,1) 59%, rgba(57,68,89,1) 100%);
+  background: -ms-linear-gradient(left, rgba(64,76,100,1) 0%, rgba(43,51,67,1) 59%, rgba(57,68,89,1) 100%);
+  background: linear-gradient(to right, rgba(64,76,100,1) 0%, rgba(43,51,67,1) 59%, rgba(57,68,89,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#404c64', endColorstr='#394459', GradientType=1 );
+  border-radius: 20px;
 }
 
 .container, .container-fluid{
-  padding-top:50px;
+  padding-top: 50px;
+}
+
+.container-forest {
+  width: 100%;
 }
 
 .odd{
-  background-color: rgba(0,0,0,0.1)
+  background-color: rgba(0,0,0,0.1);
 }
 
 .maps .map{
   margin: 10px;
-  float:left;
+  float: left;
   border-radius: 10px;
+  overflow: hidden;
 }
 
 .maps .map > div {
-  height: 39px;
-  width: 39px;
-  background-size: 39px;
+  height: 36px;
+  width: 36px;
   background-repeat: no-repeat;
+  background-image: url(../MapIcon/sprites_linear.png); 
 }
 
 .d1{
@@ -85,7 +159,7 @@ blockquote{
 }
 
 .popover{
-  min-width: 230px !important;
+  min-width: 300px !important;
   color: #333 !important;
 }
 
