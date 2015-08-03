@@ -4,21 +4,139 @@ app.controller('mainController', function($scope, $http, $log, $interval, $timeo
   
   // Initialize a list of all maps 
   $scope.initMaps = {
-    68 : {"Crypt":{left:0,top:650,bg_pos:1055},"Desert":{left:0,top:780,bg_pos:1155},"Dunes":{left:0,top:260,bg_pos:1305},"Dungeon":{left:0,top:0,bg_pos:1355},"Grotto":{left:0,top:130,bg_pos:1605},"Pit":{left:0,top:390,bg_pos:2505},"Tropical_Island":{left:0,top:520,bg_pos:3555}},
-    69 : {"Arcade":{left:130,top:520,bg_pos:205},"Cemetery":{left:130,top:390,bg_pos:655},"Channel":{left:130,top:0,bg_pos:705},"Mountain_Ledge":{left:130,top:260,bg_pos:1955},"Sewer":{left:130,top:650,bg_pos:2905},"Thicket":{left:130,top:130,bg_pos:3455},"Wharf":{left:130,top:780,bg_pos:4255},"Maelstrom_of_Chaos":{left:153,top:315,bg_pos:1755},"Vaults_of_Atziri":{left:283,top:185,bg_pos:3855}},
-    70 : {"Ghetto":{left:260,top:650,bg_pos:1455},"Mud_Geyser":{left:260,top:520,bg_pos:2005},"Museum":{left:260,top:780,bg_pos:2055},"Quarry":{left:260,top:390,bg_pos:2755},"Reef":{left:260,top:260,bg_pos:2805},"Spider_Lair":{left:260,top:0,bg_pos:3155},"Vaal_Pyramid":{left:260,top:130,bg_pos:3755},"The_Apex_of_Sacrifice":{left:220,top:75,bg_pos:3355},"Mao_Kun":{left:283,top:315,bg_pos:1805}},
-    71 : {"Arena":{left:390,top:715,bg_pos:255},"Overgrown_Shrine":{left:390,top:0,bg_pos:2355},"Promenade":{left:390,top:520,bg_pos:2705},"Shore":{left:390,top:260,bg_pos:3005},"Spider_Forest":{left:390,top:390,bg_pos:3105},"Tunnel":{left:390,top:130,bg_pos:3605},"Acton\'s_Nightmare":{left:413,top:55,bg_pos:105},"Phantasmagoria":{left:390,top:617,bg_pos:4305}},
-    72 : {"Bog":{left:520,top:130,bg_pos:455},"Coves":{left:520,top:390,bg_pos:955},"Graveyard":{left:520,top:260,bg_pos:1555},"Pier":{left:520,top:0,bg_pos:2455},"Underground_Sea":{left:520,top:715,bg_pos:3705},"Villa":{left:520,top:520,bg_pos:3905}},
-    73 : {"Arachnid_Nest":{left:650,top:0,bg_pos:155},"Catacomb":{left:650,top:520,bg_pos:555},"Colonnade":{left:650,top:390,bg_pos:755},"Dry_Woods":{left:650,top:260,bg_pos:1255},"Temple":{left:650,top:715,bg_pos:3305},"Strand":{left:650,top:130,bg_pos:3255},"Poorjoy\'s_Asylum":{left:673,top:770,bg_pos:2605},"Whakawairua_Tuahu":{left:673,top:185,bg_pos:4205}},
-    74 : {"Jungle_Valley":{left:780,top:260,bg_pos:1655},"Labyrinth":{left:780,top:390,bg_pos:1705},"Mine":{left:780,top:130,bg_pos:1905},"Torture_Chamber":{left:780,top:618,bg_pos:3505},"Waste_Pool":{left:780,top:0,bg_pos:4055},"Oba\'s_Cursed_Trove":{left:803,top:673,bg_pos:2155}},
-    75 : {"Canyon":{left:910,top:0,bg_pos:505},"Cells":{left:910,top:618,bg_pos:605},"Dark_Forest":{left:910,top:130,bg_pos:1105},"Dry_Peninsula":{left:910,top:260,bg_pos:1205},"Orchard":{left:910,top:390,bg_pos:2255}},
-    76 : {"Arid_Lake":{left:1040,top:0,bg_pos:305},"Gorge":{left:1040,top:130,bg_pos:1505},"Residence":{left:1040,top:260,bg_pos:2855},"Underground_River":{left:1040,top:504,bg_pos:3655},"Malformation":{left:1040,top:382,bg_pos:4355}},
-    77 : {"Bazaar":{left:1170,top:130,bg_pos:405},"Necropolis":{left:1170,top:504,bg_pos:2105},"Plateau":{left:1170,top:0,bg_pos:2555},"Volcano":{left:1170,top:260,bg_pos:4005}},
-    78 : {"Academy":{left:1300,top:130,bg_pos:55},"Crematorium":{left:1300,top:504,bg_pos:1005},"Precinct":{left:1300,top:0,bg_pos:2655},"Springs":{left:1300,top:260,bg_pos:3205}},
-    79 : {"Arsenal":{left:1430,top:260,bg_pos:355},"Overgrown_Ruin":{left:1430,top:0,bg_pos:2305},"Shipyard":{left:1430,top:504,bg_pos:2955},"Village_Ruin":{left:1430,top:130,bg_pos:3955},"Vaal_Temple":{left:1797,top:437,bg_pos:3805}},
-    80 : {"Courtyard":{left:1560,top:0,bg_pos:905},"Excavation":{left:1560,top:130,bg_pos:1405},"Wasteland":{left:1560,top:504,bg_pos:4105},"Waterways":{left:1560,top:260,bg_pos:4155},"The_Alluring_Abyss":{left:295,top:65,bg_pos:3405}},
-    81 : {"Maze":{left:1690,top:130,bg_pos:1855},"Palace":{left:1690,top:382,bg_pos:2405},"Shrine":{left:1690,top:0,bg_pos:2355},"Olmec\'s_Sanctum":{left:627,top:575,bg_pos:2205}},
-    82 : {"Abyss":{left:1820,top:0,bg_pos:5},"Colosseum":{left:1820,top:130,bg_pos:805},"Core":{left:1820,top:382,bg_pos:855}}  };
+    68 : {
+      "Crypt":{left:0,top:650,bg_pos:1055,cards:{}},
+      "Desert":{left:0,top:780,bg_pos:1155, cards:{Hope:{rewards:'Prismatic Ring', corrupted:true, color:'#af6025'}}},
+      "Dunes":{left:0,top:260,bg_pos:1305,cards:{}},
+      "Dungeon":{left:0,top:0,bg_pos:1355,cards:{
+                    The_Summoner:{
+                      rewards:'Superior Minion Gem',
+                      corrupted:false,
+                      color:'#1ba29b'
+                    }
+                  }
+                },
+      "Grotto":{left:0,top:130,bg_pos:1605,cards:{}},
+      "Pit":{left:0,top:390,bg_pos:2505,cards:{}},
+      "Tropical_Island":{left:0,top:520,bg_pos:3555,cards:{}}
+    },
+    69 : {
+      "Arcade":{left:130,top:520,bg_pos:205,cards:{
+                    The_Summoner:{
+                      rewards:'Superior Minion Gem',
+                      corrupted:false,
+                      color:'#1ba29b'
+                    }
+                  }
+                },
+      "Cemetery":{left:130,top:390,bg_pos:655,cards:{}},
+      "Channel":{left:130,top:0,bg_pos:705,cards:{}},
+      "Mountain_Ledge":{left:130,top:260,bg_pos:1955,cards:{}},
+      "Sewer":{left:130,top:650,bg_pos:2905,cards:{}},
+      "Thicket":{left:130,top:130,bg_pos:3455,cards:{}},
+      "Wharf":{left:130,top:780,bg_pos:4255,cards:{}},
+      "Maelstrom_of_Chaos":{left:153,top:315,bg_pos:1755,cards:{}},
+      "Vaults_of_Atziri":{left:283,top:185,bg_pos:3855,cards:{}}
+    },
+    70 : {
+      "Ghetto":{left:260,top:650,bg_pos:1455,cards:{}},
+      "Mud_Geyser":{left:260,top:520,bg_pos:2005,cards:{}},
+      "Museum":{left:260,top:780,bg_pos:2055,cards:{}},
+      "Quarry":{left:260,top:390,bg_pos:2755,cards:{}},
+      "Reef":{left:260,top:260,bg_pos:2805,cards:{}},
+      "Spider_Lair":{left:260,top:0,bg_pos:3155,cards:{}},
+      "Vaal_Pyramid":{left:260,top:130,bg_pos:3755,cards:{}},
+      "The_Apex_of_Sacrifice":{left:220,top:75,bg_pos:3405,cards:{}},
+      "Mao_Kun":{left:283,top:315,bg_pos:1805,cards:{}}
+    },
+    71 : {
+      "Arena":{left:390,top:715,bg_pos:255,cards:{}},
+      "Overgrown_Shrine":{left:390,top:0,bg_pos:2355,cards:{}},
+      "Promenade":{left:390,top:520,bg_pos:2705,cards:{}},
+      "Shore":{left:390,top:260,bg_pos:3005,cards:{}},
+      "Spider_Forest":{left:390,top:390,bg_pos:3105,cards:{}},
+      "Tunnel":{left:390,top:130,bg_pos:3605,cards:{}},
+      "Acton\'s_Nightmare":{left:413,top:55,bg_pos:105,cards:{}},
+      "Phantasmagoria":{left:390,top:617,bg_pos:4305,cards:{}}
+    },
+    72 : {
+      "Bog":{left:520,top:130,bg_pos:455,cards:{}},
+      "Coves":{left:520,top:390,bg_pos:955,cards:{}},
+      "Graveyard":{left:520,top:260,bg_pos:1555,cards:{}},
+      "Pier":{left:520,top:0,bg_pos:2455,cards:{}},
+      "Underground_Sea":{left:520,top:715,bg_pos:3705,cards:{}},
+      "Villa":{left:520,top:520,bg_pos:3905,cards:{}}
+    },
+    73 : {
+      "Arachnid_Nest":{left:650,top:0,bg_pos:155,cards:{}},
+      "Catacomb":{left:650,top:520,bg_pos:555,cards:{}},
+      "Colonnade":{left:650,top:390,bg_pos:755,cards:{}},
+      "Dry_Woods":{left:650,top:260,bg_pos:1255,cards:{}},
+      "Temple":{left:650,top:715,bg_pos:3305,cards:{}},
+      "Strand":{left:650,top:130,bg_pos:3255,cards:{}},
+      "Poorjoy\'s_Asylum":{left:673,top:770,bg_pos:2605,cards:{}},
+      "Whakawairua_Tuahu":{left:673,top:185,bg_pos:4205,cards:{}},
+      "Olmec\'s_Sanctum":{left:627,top:575,bg_pos:2205,cards:{}}
+    },
+    74 : {
+      "Jungle_Valley":{left:780,top:260,bg_pos:1655,cards:{}},
+      "Labyrinth":{left:780,top:390,bg_pos:1705,cards:{}},
+      "Mine":{left:780,top:130,bg_pos:1905,cards:{}},
+      "Torture_Chamber":{left:780,top:618,bg_pos:3505,cards:{}},
+      "Waste_Pool":{left:780,top:0,bg_pos:4055,cards:{}},
+      "Oba\'s_Cursed_Trove":{left:803,top:673,bg_pos:2155,cards:{}}
+    },
+    75 : {
+      "Canyon":{left:910,top:0,bg_pos:505,cards:{}},
+      "Cells":{left:910,top:618,bg_pos:605,cards:{}},
+      "Dark_Forest":{left:910,top:130,bg_pos:1105,cards:{}},
+      "Dry_Peninsula":{left:910,top:260,bg_pos:1205,cards:{}},
+      "Orchard":{left:910,top:390,bg_pos:2255,cards:{}}
+    },
+    76 : {
+      "Arid_Lake":{left:1040,top:0,bg_pos:305,cards:{}},
+      "Gorge":{left:1040,top:130,bg_pos:1505,cards:{}},
+      "Residence":{left:1040,top:260,bg_pos:2855,cards:{}},
+      "Underground_River":{left:1040,top:504,bg_pos:3655,cards:{}},
+      "Malformation":{left:1040,top:382,bg_pos:4355,cards:{}}
+    },
+    77 : {
+      "Bazaar":{left:1170,top:130,bg_pos:405,cards:{}},
+      "Necropolis":{left:1170,top:504,bg_pos:2105,cards:{}},
+      "Plateau":{left:1170,top:0,bg_pos:2555,cards:{}},
+      "Volcano":{left:1170,top:260,bg_pos:4005,cards:{}}
+    },
+    78 : {
+      "Academy":{left:1300,top:130,bg_pos:55,cards:{}},
+      "Crematorium":{left:1300,top:504,bg_pos:1005,cards:{}},
+      "Precinct":{left:1300,top:0,bg_pos:2655,cards:{}},
+      "Springs":{left:1300,top:260,bg_pos:3205,cards:{}}
+    },
+    79 : {
+      "Arsenal":{left:1430,top:260,bg_pos:355,cards:{}},
+      "Overgrown_Ruin":{left:1430,top:0,bg_pos:2305,cards:{}},
+      "Shipyard":{left:1430,top:504,bg_pos:2955,cards:{}},
+      "Village_Ruin":{left:1430,top:130,bg_pos:3955,cards:{}},
+      "Vaal_Temple":{left:1797,top:437,bg_pos:3805,cards:{}}
+         },
+    80 : {
+      "Courtyard":{left:1560,top:0,bg_pos:905,cards:{}},
+      "Excavation":{left:1560,top:130,bg_pos:1405,cards:{}},
+      "Wasteland":{left:1560,top:504,bg_pos:4105,cards:{}},
+      "Waterways":{left:1560,top:260,bg_pos:4155,cards:{}},
+      "The_Alluring_Abyss":{left:295,top:65,bg_pos:3355,cards:{}}
+    },
+    81 : {
+      "Maze":{left:1690,top:130,bg_pos:1855,cards:{}},
+      "Palace":{left:1690,top:382,bg_pos:2405,cards:{}},
+      "Shrine":{left:1690,top:0,bg_pos:2355,cards:{}}
+    },
+    82 : {
+      "Abyss":{left:1820,top:0,bg_pos:5,cards:{}},
+      "Colosseum":{left:1820,top:130,bg_pos:805,cards:{}},
+      "Core":{left:1820,top:382,bg_pos:855,cards:{}}
+    }  
+  };
   
   // Array of (map_name, map_data) key,value pairs, map_data has two integer valued fields: bg_pos and level
   $scope.mapsByName = {}
@@ -36,20 +154,23 @@ app.controller('mainController', function($scope, $http, $log, $interval, $timeo
     // doesn't imply copying every bg_pos attribute every time we call update().
   }
   
+  $scope.d4classSwitch = true;
+
   $scope.date = new Date().getTime();
   $scope.search = '';
   $scope.autoUpdate = true;
   $scope.timestampOffset = (new Date()).getTimezoneOffset() * 1000;
   
+  $scope.firstLoad = true;
+  var alreadyCalled = [];
+  
   sockets.emit('init', function(data, ev){
-    console.log(JSON.parse(data.success));
     updateMaps(JSON.parse(data.success));
   })
   
   sockets.on('update', function (data, ev) {
     // Don't update the view if the user is watching legacy files
     if($scope.autoUpdate){
-      console.log(data);
       updateMaps(JSON.parse(data));
     }
   });
@@ -59,9 +180,13 @@ app.controller('mainController', function($scope, $http, $log, $interval, $timeo
     showDots: -1,
     forestLayout: true,
     toolboxWidth: 300,
+    callOutDots: true,
+    supportsSynth : 'speechSynthesis' in window
   }
+  
   if(typeof(Storage) !== 'undefined') {
     $scope.settings.forestLayout = localStorage.getItem('forestLayout') === "true";
+    //$scope.settings.callOutDots = localStorage.getItem('callOutDots') === "true";
   }  
   
   $scope.$watch("date", function(j,_){
@@ -101,7 +226,9 @@ app.controller('mainController', function($scope, $http, $log, $interval, $timeo
       "Catacomb", "Torture_Chamber", "Cells", "Underground_River"],
     ["Crypt", "Sewer", "Ghetto", "Arena", "Underground_Sea", "Temple",
       "Torture_Chamber"],
-    ["Desert", "Wharf", "Museum", "Arena"]
+    ["Desert", "Wharf", "Museum", "Arena"],
+    ["Phantasmagoria","Underground_Sea"],
+    ["Malformation","Necropolis"],
   ];
   $timeout(function(){drawAllArrows($scope.arrows)},0);
   
@@ -111,7 +238,8 @@ app.controller('mainController', function($scope, $http, $log, $interval, $timeo
     $scope.dots4 = [];
     // Iterate over each of the CURRENT warbands
     angular.forEach(data['maps'], function(object, _){
-      
+      // Reset the already called out maps on warband reset
+      if(data.timeslot>$scope.getCurrentTimeslot()) alreadyCalled = [];
       // Parse the data into a new object, with the map name as key
       angular.forEach($scope.maps, function(maps, lv){
         // Only overwrite maps with data.
@@ -137,13 +265,27 @@ app.controller('mainController', function($scope, $http, $log, $interval, $timeo
             object.last_report_name = object.last_report_text.match(/#.*:/)[0].replace(/#/,'@').replace(/:/,'');
             // remove everything that's not a part of the message
             object.last_report_text = object.last_report_text.replace(/#.*: /, '');
+            // Parse in div cards
+            object.cards = $scope.maps[lv][object.name].cards;
             $scope.maps[lv][object.name] = object;
             // Parse the 4dot maps to use in the sidepanel
-            if(object.dots == "4" && $scope.dots4[object.name] == undefined) $scope.dots4.push(object.name);
+            if(object.dots == "4" && $scope.dots4[object.name] == undefined){
+              if($scope.settings.callOutDots && $scope.firstLoad) alreadyCalled.push(object.name.replace(/_/g,' ').replace(/'/g, ''));
+              $scope.dots4.push(object.name);
+              // Don't speak if it's the first time we run through this
+              if($scope.settings.callOutDots && !$scope.firstLoad && $scope.autoUpdate){
+                // If the voices has been loaded, go ahead and speak
+                if($scope.voiceIsLoaded){
+                  callOutDots(object);
+                }   
+              }
+            }
           }
         }
       })
     })
+    $scope.d4classSwitch = !$scope.d4classSwitch;
+    $scope.firstLoad = false;
   }
   
   $http.get('http://nembibi.com/warbands/reset_timer', {cache:true}).success(function(data){
@@ -157,7 +299,34 @@ app.controller('mainController', function($scope, $http, $log, $interval, $timeo
       updateMaps(JSON.parse(data.success));
     });
   }
- 
+  
+  window.speechSynthesis.onvoiceschanged = function() {
+    $scope.voiceIsLoaded = true;
+  };
+  
+  function callOutDots(map){
+    var map_name = map.name.replace(/_/g,' ').replace(/'/g, '')
+    if ($scope.settings.supportsSynth && alreadyCalled.indexOf(map_name) === -1) {
+      alreadyCalled.push(map_name);
+      var msg = new SpeechSynthesisUtterance();
+      var voices = window.speechSynthesis.getVoices();
+      msg.voice = voices[1];
+      
+      switch(map.band){
+        case 'Mutewind' :
+          dots = 'Cleansed';break;
+        case 'Brinerot' :
+          dots = 'Captured';break;
+        case 'Redblade' :
+          dots = 'Conquerred';break;
+      }
+      
+      msg.text = map_name + ' has been ' + dots + ' by ' + map.band;
+      msg.lang = 'en-US';
+      speechSynthesis.speak(msg);
+    }
+  }
+  
   function timer(){
     // User is viewing live data
     if($scope.autoUpdate){

@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="shortcut icon" type="image/png" href="favicon.png"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/bootstrap.css">
     <link rel="stylesheet" href="/css/main.css">
     
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
     <script src="/js/angular-strap.js"></script>
     <script src="/js/angular-strap-tpls.js"></script>
-    <!--<script src="js/angular-panhandler.js"></script> -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/socket.min.js"></script>
     <script src="/js/app.js"></script>
@@ -19,7 +19,7 @@
   </head>
   
   <body ng-controller="mainController">
-    <div class="container container-forest">
+    <div class="{{settings.forestLayout ? 'container container-forest' : 'container'}}">
       <!-- Map content -->
       <div class="maps col-xs-12 col-md-9 col-xl-11" ng-show="!settings.forestLayout">
         <!-- Map levels -->
@@ -34,7 +34,7 @@
                popover-title="{{name | fixName}}" 
                popover-trigger="mouseenter" 
                popover-placement="{{level >= 80 ? 'top' : 'bottom'}}" 
-               class="map {{map.band}} d{{map.dots}}" 
+               class="map {{map.band}} d{{d4classSwitch || map.dots == undefined || map.dots < 4 ? map.dots : map.dots + 'bis'}}" 
                ng-repeat="(name, map) in maps" 
                ng-show="showMaps(map, settings.showDots);">
             
@@ -47,16 +47,6 @@
       </div>
       <!-- /Map content -->
 	  
-<!-- Well shit, this looked promising, but only Chrome can show it apparently :/
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1900" height="850">
-  <foreignObject ng-repeat="(name, map) in mapsByName" ng-attr-x="{{map.left}}" ng-attr-y="{{map.top}}" width="1" height="1" class="maps">
-    <div id="svg_map_{{name}}" class="map {{maps[map.level][name].band}} d{{maps[map.level][name].dots}}" >
-	  <div style="background-position:-{{map.bg_pos}}px 0px;">
-	  </div>
-    </div>
-  </foreignObject>
-</svg> -->
-
       <!-- Toolbox -->
       <div class="toolbox {{settings.forestLayout && 'toolbox-forest' || !settings.forestLayout && 'col-xs-12 col-md-3 col-xl-1'}}" style="{{settings.forestLayout && 'width:'+settings.toolboxWidth+'px;'}}">
         <!-- Toggle Show All/4dots/unknown -->
@@ -115,6 +105,14 @@
 		<div class="panel panel-default">
 		  <button class="btn btn-default btn-sm" style="width:100%;" ng-click="toggleLayout();"><b>Toggle layout</b><br/>Currently layout: <i>{{settings.forestLayout ? 'Forest' : 'List'}}</i></button>
 		</div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Settings
+          </div>
+          <div class="panel-body">
+            <button class="btn btn-lg btn-default" ng-click="settings.callOutDots = !settings.callOutDots"><i class="fa" ng-class="settings.callOutDots ? 'fa-volume-up' : 'fa-volume-off'"></i></button>
+          </div>
+        </div>
       </div>
       <!-- /Toolbox -->
 	  
@@ -127,14 +125,20 @@
           <!-- Secondary Layout: Map content -->
           <div id="contentbox" width="1350" height="850" style="position:absolute; top:0px; left:0px" ng-show="settings.forestLayout">
 	        <div class="maps">
+              <div
+                 style="position:absolute; left: {{staticmap.left*0.7+59}}px; top: {{staticmap.top+37}}px;"
+                 class="forest-level"
+                 ng-repeat="(name, staticmap) in mapsByName" >
+                {{staticmap.level}}
+              </div>
               <div 
 		           ng-dummy="{{map = maps[staticmap.level][name]}} ====> there is probably a more standardized way to do that"
                    popover-append-to-body="true"
                    popover-template="mapPopover.templateUrl" 
                    popover-title="{{name | fixName}}" 
                    popover-trigger="mouseenter" 
-                   popover-placement="{{staticmap.left > 0 ? (staticmap.top >= 520 ? 'top' : 'bottom') : 'right'}}" 
-                   class="map {{map.band}} d{{map.dots}} {{showMaps(map, settings.showDots) ? '' : 'forest-map-hidden'}}"
+                   popover-placement="{{staticmap.left > 0 ? (staticmap.top >= 520 ? 'top' : 'bottom') : 'right'}}"
+                   class="map {{map.band}} d{{d4classSwitch || map.dots == undefined || map.dots < 4 ? map.dots : map.dots + 'bis'}} {{showMaps(map, settings.showDots) ? '' : 'forest-map-hidden'}}"
                    ng-repeat="(name, staticmap) in mapsByName"
 			       style="position:absolute; left: {{staticmap.left*0.7}}px; top: {{staticmap.top}}px;"
 			       id="layout2_map_{{name}}" > 
@@ -155,6 +159,11 @@
       <p>Current status: <b>{{map.dots == undefined ? 'No report yet' : map.dots == 0 ? 'Empty' : map.band != 'None' ? map.band : 'Unknown Band,'}}</b><b ng-show="{{map.dots > 0}}"> {{map.dots | pluralize : 'dot'}}</b></p>
       <p ng-hide="{{map.band == 'None' || !map.band}}">Identify: <b>{{bandLoot(map.band)}}</b></p>
       <blockquote style="text-align:left !important" ng-hide="!map.band"><b>{{map.last_report_name}}</b> {{map.last_report_time | betweenParentheses}}<br/><i>{{map.last_report_text}}</i></blockquote>
+      <div>
+        <div ng-repeat="(name, card) in map.cards">
+           {{name}}
+        </div>
+      </div>
     </div>
   </script>
   
