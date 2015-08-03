@@ -44,3 +44,5 @@ Temporary Items
 pythonscript/warbands.html
 *.js~
 *.html~
+website/node/current_data.json
+website/node/t.php
